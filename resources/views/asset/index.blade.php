@@ -1,56 +1,74 @@
 @extends('adminlte::page')
 
-@section('title', 'Lista de Assets')
-
-@section('content_header')
-    <h1>Lista de Assets</h1>
+@section('css')
+@vite(['resources/sass/app.scss', 'resources/js/app.js'])
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
 @endsection
 
 @section('content')
-    @if($assets->isEmpty())
-        <div class="alert alert-info">
-            No hay assets cargados aún.
-        </div>
-    @else
-        <table class="table table-bordered table-striped">
+<div class="container">
+    <div class="row">
+        <h2>Galería de Assets</h2>
+        <hr>
+        <br>
+        <p align="right">
+            <a href="{{ route('asset.create') }}" class="btn btn-success">Nuevo Asset</a>
+            <a href="{{ route('home') }}" class="btn btn-primary">Regresar</a>
+        </p>
+        <table id="example" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Miniatura</th>
-                    <th>Video</th>
                     <th>Acciones</th>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Ruta/Enlace</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($assets as $asset)
-                    <tr>
-                        <td>{{ $asset->id }}</td>
-                        <td>{{ $asset->title }}</td>
-                        <td>
-                            @if($asset->image)
-                                <img src="{{ url('/miniatura/' . $asset->image) }}" alt="Miniatura" style="max-width: 100px;">
-                            @else
-                                Sin imagen
-                            @endif
-                        </td>
-                        <td>
-                            @if($asset->video_path)
-                                <video width="160" controls>
-                                    <source src="{{ url('/video-file/' . $asset->video_path) }}" type="video/mp4">
-                                    Tu navegador no soporta video HTML5.
-                                </video>
-                            @else
-                                Sin video
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('asset.show', $asset->id) }}" class="btn btn-primary btn-sm">Ver</a>
-                            {{-- Aquí puedes agregar editar, borrar, etc --}}
-                        </td>
-                    </tr>
-                @endforeach
             </tbody>
         </table>
-    @endif
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h1 class="modal-title fs-5">Confirmar Eliminación</h1>
+            </div>
+            <div class="modal-body">
+                ¿Deseas eliminar el asset ID: <span id="id_asset_text"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a href="" id="borrar" class="btn btn-danger">Confirmar</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('js')
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<script>
+    function modal(parametro) {
+        $('#id_asset_text').html(parametro);
+        let url = "{{ route('asset.destroy', ':id') }}";
+        url = url.replace(':id', parametro);
+        document.getElementById('borrar').href = url;
+    }
+
+    var data = @json($assets);
+
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "data": data,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
 @endsection

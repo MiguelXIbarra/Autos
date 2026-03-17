@@ -9,10 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('assets', function (Blueprint $table) {
-            $table->id();
-            $table->string('titulo', 100);
-            $table->string('imagen', 100);
-            $table->string('ruta_video', 100);
+            $table->id('id_asset');
+            $table->string('titulo');
+            $table->string('tipo');
+            $table->string('ruta');
+            $table->integer('estatus')->default(1);
             $table->timestamps();
         });
     }

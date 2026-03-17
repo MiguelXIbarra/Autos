@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
 {
-    protected $fillable = [
-        'title',
-        'imagen',
-        'video_path',
-    ];
+    protected $table = 'assets';
+    protected $primaryKey = 'id_asset';
+    protected $fillable = ['titulo', 'tipo', 'ruta', 'estatus'];
 }
