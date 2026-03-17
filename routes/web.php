@@ -33,7 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ventas/destroy/{id}', [VentasController::class, 'destroy'])->name('ventas.destroy');
     Route::resource('ventas', VentasController::class);
 
-    Route::resource('usuarios', UserController::class)->only(['index']);
+    Route::get('/usuarios/destroy/{id}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+    Route::resource('usuarios', UserController::class);
 
     Route::get('/asset/destroy/{id}', [AssetController::class, 'destroy'])->name('asset.destroy');
     Route::resource('asset', AssetController::class);
