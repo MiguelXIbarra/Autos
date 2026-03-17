@@ -3,58 +3,113 @@
 namespace App\Http\Controllers;
 
 use App\Models\Venta;
-use App\Models\Clientes;
 use App\Models\Autos;
+use App\Models\Cliente;
+use App\Models\Empleado;
 use Illuminate\Http\Request;
 
 class VentasController extends Controller
 {
     public function index()
     {
-        // Traemos las ventas con la información del cliente cargada
-        $ventas = Venta::with('cliente')->get();
-        return view('ventas.index', compact('ventas'));
+        $ventas = Venta::with(['auto', 'cliente', 'empleado'])->where('estatus', 1)->get();
+        return view('ventas.index', ['ventas' => $this->cargarDT($ventas)]);
     }
 
     public function create()
     {
-        $clientes = Clientes::all();
-        $autos = Autos::where('status', 1)->get(); // Solo autos disponibles
-        return view('ventas.create', compact('clientes', 'autos'));
+        $autos = Autos::where('estatus', 1)->get();
+        $clientes = Cliente::where('estatus', 1)->get();
+        $empleados = Empleado::where('estatus', 1)->get();
+        return view('ventas.create', compact('autos', 'clientes', 'empleados'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'client_id' => 'required',
-            'auto_id' => 'required',
+        $validacion = $request->validate([
+            'id_auto' => 'required',
+            'id_cliente' => 'required',
+            'id_empleado' => 'required',
+            'fecha_venta' => 'required|date',
+            'total' => 'required|numeric'
         ]);
 
-        // Buscamos el auto para obtener su nombre y detalles
-        $auto = Autos::find($request->auto_id);
+        Venta::create($validacion + ['estatus' => 1]);
+        return redirect()->route('ventas.index');
+    }
 
-        $venta = new Venta();
-        $venta->client_id = $request->client_id;
-        $venta->title = "Venta de: " . $auto->name;
-        $venta->description = $request->input('comentarios');
-        $venta->category = "Venta Automotriz";
-        $venta->status = "Vendido";
-        $venta->save();
+    public function show($id)
+    {
+        $venta = Venta::with(['auto', 'cliente', 'empleado'])->findOrFail($id);
+        return view('ventas.show', compact('venta'));
+    }
 
-        // Marcamos el auto como vendido (status 0)
-        $auto->status = 0;
-        $auto->save();
+    public function edit($id)
+    {
+        $venta = Venta::findOrFail($id);
+        $autos = Autos::where('estatus', 1)->get();
+        $clientes = Cliente::where('estatus', 1)->get();
+        $empleados = Empleado::where('estatus', 1)->get();
+        return view('ventas.edit', compact('venta', 'autos', 'clientes', 'empleados'));
+    }
 
-        return redirect()->route('ventas.index')->with('message', 'Venta registrada con éxito');
+    public function update(Request $request, $id)
+    {
+        $validacion = $request->validate([
+            'id_auto' => 'required',
+            'id_cliente' => 'required',
+            'id_empleado' => 'required',
+            'fecha_venta' => 'required|date',
+            'total' => 'required|numeric'
+        ]);
 
-        // 1. Guardar la venta
-       $venta = Venta::create($request->all());
+        $venta = Venta::findOrFail($id);
+        $venta->update($validacion);
 
-    // 2. Cambiar el estado del Auto para que ya no aparezca disponible
-         $auto = Autos::find($request->auto_id);
-         $auto->status = 0; // 0 = Vendido / No disponible
-         $auto->save();
+        return redirect()->route('ventas.index');
+    }
 
-    return redirect()->route('ventas.index')->with('message', '¡Venta realizada y stock actualizado!');
-}
+    public function destroy($id)
+    {
+        $venta = Venta::find($id);
+        if ($venta) {
+            $venta->estatus = 0;
+            $venta->update();
+        }
+        return redirect()->route('ventas.index');
+    }
+
+    private function cargarDT($consulta)
+    {
+        $datosFilas = [];
+        foreach ($consulta as $key => $value) {
+            $ver = route('ventas.show', $value['id_venta']);
+            $actualizar = route('ventas.edit', $value['id_venta']);
+            
+            $acciones = '
+            <div class="btn-acciones">
+                <div class="btn-circle">
+                    <a href="' . $ver . '" role="button" class="btn btn-primary">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="' . $actualizar . '" role="button" class="btn btn-success">
+                        <i class="far fa-edit"></i>
+                    </a>
+                    <a role="button" class="btn btn-danger" onclick="modal(' . $value['id_venta'] . ')" data-toggle="modal" data-target="#exampleModal">
+                        <i class="far fa-trash-alt"></i>
+                    </a>
+                </div>
+            </div>';
+
+            $datosFilas[$key] = array(
+                $acciones,
+                $value['id_venta'],
+                $value->cliente->nombre . ' ' . $value->cliente->apellido,
+                $value->auto->marca . ' ' . $value->auto->modelo,
+                $value->fecha_venta,
+                '$' . number_format($value['total'], 2)
+            );
+        }
+        return $datosFilas;
+    }
 }

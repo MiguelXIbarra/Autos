@@ -2,24 +2,33 @@
 
 namespace App\Models;
 
-use EmptyIterator;
 use Illuminate\Database\Eloquent\Model;
 
 class Venta extends Model
 {
     protected $table = 'ventas';
-
+    protected $primaryKey = 'id_venta';
     protected $fillable = [
-        'cliente_id', 
-        'auto_id', 
-        'empleado_id', 
-        'precio_final', 
-        'fecha_venta', 
-        'metodo_pago'
+        'id_auto',
+        'id_cliente',
+        'id_empleado',
+        'fecha_venta',
+        'total',
+        'estatus'
     ];
 
-    // Relaciones para poder escribir: $venta->cliente->name
-    public function cliente() { return $this->belongsTo(Clientes::class); }
-    public function auto() { return $this->belongsTo(Autos::class); }
-    public function empleado() { return $this->belongsTo(Empleado::class); }
+    public function auto()
+    {
+        return $this->belongsTo(Autos::class, 'id_auto');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente');
+    }
+
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class, 'id_empleado');
+    }
 }
