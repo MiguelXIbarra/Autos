@@ -15,34 +15,30 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Auth::routes();
+Auth::routes();
 
-// Grupo de rutas protegidas por login
 Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    // Gestión de Recursos Principales
+    Route::get('/autos/destroy/{id}', [AutosController::class, 'destroy'])->name('autos.destroy');
     Route::resource('autos', AutosController::class);
-    Route::resource('clientes', ClientesController::class);
-    Route::resource('empleados', EmpleadosController::class);
-    Route::resource('ventas', VentasController::class);
-    Route::resource('asset', AssetController::class);
 
-    // Rutas para archivos de Asset (Video e Imagen)
+    Route::get('/clientes/destroy/{id}', [ClientesController::class, 'destroy'])->name('clientes.destroy');
+    Route::resource('clientes', ClientesController::class);
+
+    Route::get('/empleados/destroy/{id}', [EmpleadosController::class, 'destroy'])->name('empleados.destroy');
+    Route::resource('empleados', EmpleadosController::class);
+
+    Route::resource('ventas', VentasController::class);
+
+    Route::resource('usuarios', UserController::class)->only(['index']);
+
+    Route::resource('asset', AssetController::class);
     Route::get('/video-file/{filename}', [AssetController::class, 'getVideo'])->name('fileVideo');
     Route::get('/miniatura/{filename}', [AssetController::class, 'getImage'])->name('imageVideo');
 
-    // Generador
     Route::get('/imprimir', [GeneradorController::class, 'imprimir'])->name('imprimir');
+    Route::get('/imprimirBD', [GeneradorController::class, 'imprimirBD'])->name('imprimirBD');
 
-    // Dashboard
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/usuarios', [App\Http\Controllers\UserController::class, 'index'])->name('usuarios.index');
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
-    Route::middleware(['auth'])->group(function () {
-    Route::resource('autos', AutosController::class);
-});
-    }  );
-    });
 });

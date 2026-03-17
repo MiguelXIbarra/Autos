@@ -1,53 +1,44 @@
 @extends('adminlte::page')
 
-@section('title', 'Crear Auto Deportivo')
-
 @section('content')
 <div class="container">
-    <h2>Crear Nuevo Auto Deportivo</h2>
+    <div class="row">
+        <h2>Registrar Nuevo Auto</h2>
+    </div>
+    <hr>
+    <div class="row">
+        <form action="{{ route('autos.store') }}" method="post" class="col-lg-7">
+            @csrf
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{$error}}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-    <!-- Alertas flash -->
-    @include('partials.alerts')
-
-    <!-- Mostrar errores de validación -->
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('autos.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        <div class="form-group">
-            <label>Nombre del Auto</label>
-            <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
-        </div>
-
-        <div class="form-group">
-            <label>Email del Propietario</label>
-            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-        </div>
-
-        <div class="form-group">
-            <label>Cliente Asociado</label>
-            <select name="cliente_id" class="form-control" required>
-                @foreach ($clientes as $cliente)
-                    <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Imagen del Auto</label>
-            <input type="file" name="imagen" class="form-control">
-        </div>
-
-        <button type="submit" class="btn btn-success mt-2">Guardar Auto</button>
-    </form>
+            <div class="form-group">
+                <label for="marca">Marca</label>
+                <input type="text" class="form-control" id="marca" name="marca" value="{{old('marca')}}" required />
+            </div>
+            <div class="form-group">
+                <label for="modelo">Modelo</label>
+                <input type="text" class="form-control" id="modelo" name="modelo" value="{{old('modelo')}}" required />
+            </div>
+            <div class="form-group">
+                <label for="anio">Año</label>
+                <input type="number" class="form-control" id="anio" name="anio" value="{{old('anio')}}" required />
+            </div>
+            <div class="form-group">
+                <label for="precio">Precio</label>
+                <input type="text" class="form-control" id="precio" name="precio" value="{{old('precio')}}" required />
+            </div>
+            <br>
+            <button type="submit" class="btn btn-success">Guardar Registro</button>
+            <a href="{{ route('autos.index') }}" class="btn btn-danger">Cancelar</a>
+        </form>
+    </div>
 </div>
 @endsection
