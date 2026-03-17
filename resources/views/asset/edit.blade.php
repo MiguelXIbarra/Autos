@@ -1,13 +1,15 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
-    <div class="row"><h2>Editar Asset: {{ $asset->titulo }}</h2></div>
+    <div class="row">
+        <h2>Editar Asset: {{ $asset->titulo }}</h2>
+    </div>
     <hr>
     <form action="{{ route('asset.update', $asset->id_asset) }}" method="POST">
         @csrf
         @method('PUT')
-        
+
         <div class="form-group">
             <label for="titulo">Nombre/Título</label>
             <input type="text" class="form-control" name="titulo" value="{{ $asset->titulo }}" required />

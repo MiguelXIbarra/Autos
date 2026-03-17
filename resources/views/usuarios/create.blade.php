@@ -1,8 +1,10 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
-    <div class="row"><h2>Registrar Nuevo Usuario</h2></div>
+    <div class="row">
+        <h2>Registrar Nuevo Usuario</h2>
+    </div>
     <hr>
     <div class="row">
         <form action="{{ route('usuarios.store') }}" method="POST" class="col-lg-7">

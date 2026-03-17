@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
@@ -21,12 +21,14 @@
                 <label for="salario">Salario Mensual</label>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input type="number" step="0.01" class="form-control" id="salario" name="salario" value="{{old('salario')}}" required />
+                    <input type="number" step="0.01" class="form-control" id="salario" name="salario"
+                        value="{{old('salario')}}" required />
                 </div>
             </div>
             <div class="form-group">
                 <label for="fecha_ingreso">Fecha de Ingreso</label>
-                <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" value="{{old('fecha_ingreso')}}" required />
+                <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso"
+                    value="{{old('fecha_ingreso')}}" required />
             </div>
             <br>
             <button type="submit" class="btn btn-success">Guardar Empleado</button>

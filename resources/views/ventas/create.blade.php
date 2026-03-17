@@ -1,8 +1,10 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
-    <div class="row"><h2>Registrar Transacción de Venta</h2></div>
+    <div class="row">
+        <h2>Registrar Transacción de Venta</h2>
+    </div>
     <hr>
     <form action="{{ route('ventas.store') }}" method="POST" class="row">
         @csrf
@@ -12,7 +14,8 @@
                 <select name="id_auto" class="form-control" required>
                     <option value="">-- Seleccione un Auto --</option>
                     @foreach($autos as $auto)
-                        <option value="{{ $auto->id_auto }}">{{ $auto->marca }} {{ $auto->modelo }} (${{ $auto->precio }})</option>
+                    <option value="{{ $auto->id_auto }}">{{ $auto->marca }} {{ $auto->modelo }} (${{ $auto->precio }})
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -21,7 +24,7 @@
                 <select name="id_cliente" class="form-control" required>
                     <option value="">-- Seleccione el Cliente --</option>
                     @foreach($clientes as $cliente)
-                        <option value="{{ $cliente->id_cliente }}">{{ $cliente->nombre }} {{ $cliente->apellido }}</option>
+                    <option value="{{ $cliente->id_cliente }}">{{ $cliente->nombre }} {{ $cliente->apellido }}</option>
                     @endforeach
                 </select>
             </div>
@@ -32,7 +35,8 @@
                 <select name="id_empleado" class="form-control" required>
                     <option value="">-- Seleccione el Vendedor --</option>
                     @foreach($empleados as $empleado)
-                        <option value="{{ $empleado->id_empleado }}">{{ $empleado->nombre }} ({{ $empleado->puesto }})</option>
+                    <option value="{{ $empleado->id_empleado }}">{{ $empleado->nombre }} ({{ $empleado->puesto }})
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -43,7 +47,8 @@
                         <input type="date" name="fecha_venta" class="form-control" value="{{ date('Y-m-d') }}" required>
                     </div>
                     <div class="col-6">
-                        <input type="number" step="0.01" name="total" class="form-control" placeholder="Precio Final" required>
+                        <input type="number" step="0.01" name="total" class="form-control" placeholder="Precio Final"
+                            required>
                     </div>
                 </div>
             </div>

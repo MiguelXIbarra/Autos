@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
@@ -12,23 +12,28 @@
             @method('PUT')
             <div class="form-group">
                 <label for="nombre">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $cliente->nombre }}" required />
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $cliente->nombre }}"
+                    required />
             </div>
             <div class="form-group">
                 <label for="apellido">Apellido</label>
-                <input type="text" class="form-control" id="apellido" name="apellido" value="{{ $cliente->apellido }}" required />
+                <input type="text" class="form-control" id="apellido" name="apellido" value="{{ $cliente->apellido }}"
+                    required />
             </div>
             <div class="form-group">
                 <label for="correo">Correo Electrónico</label>
-                <input type="email" class="form-control" id="correo" name="correo" value="{{ $cliente->correo }}" required />
+                <input type="email" class="form-control" id="correo" name="correo" value="{{ $cliente->correo }}"
+                    required />
             </div>
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
-                <input type="text" class="form-control" id="telefono" name="telefono" value="{{ $cliente->telefono }}" required />
+                <input type="text" class="form-control" id="telefono" name="telefono" value="{{ $cliente->telefono }}"
+                    required />
             </div>
             <div class="form-group">
                 <label for="direccion">Dirección</label>
-                <input type="text" class="form-control" id="direccion" name="direccion" value="{{ $cliente->direccion }}" required />
+                <input type="text" class="form-control" id="direccion" name="direccion"
+                    value="{{ $cliente->direccion }}" required />
             </div>
             <br>
             <button type="submit" class="btn btn-success">Actualizar Datos</button>

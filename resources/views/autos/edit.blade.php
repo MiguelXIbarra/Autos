@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
@@ -10,15 +10,15 @@
         <form action="{{ route('autos.update', $auto->id_auto) }}" method="post" class="col-lg-7">
             @csrf
             @method('PUT')
-            
+
             @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{$error}}</li>
-                        @endforeach
-                    </ul>
-                </div>
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                    <li>{{$error}}</li>
+                    @endforeach
+                </ul>
+            </div>
             @endif
 
             <div class="form-group">
@@ -27,7 +27,8 @@
             </div>
             <div class="form-group">
                 <label for="modelo">Modelo</label>
-                <input type="text" class="form-control" id="modelo" name="modelo" value="{{ $auto->modelo }}" required />
+                <input type="text" class="form-control" id="modelo" name="modelo" value="{{ $auto->modelo }}"
+                    required />
             </div>
             <div class="form-group">
                 <label for="anio">Año</label>
@@ -35,7 +36,8 @@
             </div>
             <div class="form-group">
                 <label for="precio">Precio</label>
-                <input type="text" class="form-control" id="precio" name="precio" value="{{ $auto->precio }}" required />
+                <input type="text" class="form-control" id="precio" name="precio" value="{{ $auto->precio }}"
+                    required />
             </div>
             <br>
             <button type="submit" class="btn btn-success">Actualizar Cambios</button>

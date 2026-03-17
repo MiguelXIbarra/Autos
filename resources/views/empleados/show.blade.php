@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
@@ -25,7 +25,8 @@
                             </tr>
                             <tr>
                                 <th>Salario:</th>
-                                <td><span class="text-success font-weight-bold">${{ number_format($empleado->salario, 2) }}</span></td>
+                                <td><span class="text-success font-weight-bold">${{ number_format($empleado->salario, 2)
+                                        }}</span></td>
                             </tr>
                             <tr>
                                 <th>Fecha de Ingreso:</th>
@@ -43,7 +44,8 @@
             </div>
             <div class="card-footer">
                 <a href="{{ route('empleados.index') }}" class="btn btn-secondary">Regresar a la lista</a>
-                <a href="{{ route('empleados.edit', $empleado->id_empleado) }}" class="btn btn-success">Editar Expediente</a>
+                <a href="{{ route('empleados.edit', $empleado->id_empleado) }}" class="btn btn-success">Editar
+                    Expediente</a>
             </div>
         </div>
     </div>

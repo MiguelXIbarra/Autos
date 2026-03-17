@@ -1,8 +1,10 @@
-@extends('adminlte::page')
+@extends('layouts.page')
 
 @section('content')
 <div class="container">
-    <div class="row"><h2>Editar Usuario: {{ $usuario->name }}</h2></div>
+    <div class="row">
+        <h2>Editar Usuario: {{ $usuario->name }}</h2>
+    </div>
     <hr>
     <div class="row">
         <form action="{{ route('usuarios.update', $usuario->id) }}" method="POST" class="col-lg-7">
