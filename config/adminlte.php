@@ -344,7 +344,7 @@ return [
         ['header' => 'REPORTES'],
         [
             'text' => 'Generar Reporte PDF',
-            'url' => 'imprimir',
+            'url' => 'imprimirBD',
             'icon' => 'fas fa-fw fa-file-pdf',
         ],
     ],
