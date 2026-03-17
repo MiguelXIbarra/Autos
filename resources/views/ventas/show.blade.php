@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('content')
+@section('content_body')
 <div class="container">
     <div class="card card-outline card-success mt-4">
         <div class="card-header">

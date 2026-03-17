@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
 @endsection
 
-@section('content')
+@section('content_body')
 <div class="container">
     <div class="row">
         <h2>Galería de Assets</h2>

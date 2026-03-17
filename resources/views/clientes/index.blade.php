@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.2/css/buttons.dataTables.css">
 @endsection
 
-@section('content')
+@section('content_body')
 <div class="container">
     <div class="row">
         @if (session('message'))

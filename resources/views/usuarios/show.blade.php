@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('content')
+@section('content_body')
 <div class="container">
     <div class="row">
         <h2>Detalle del Usuario</h2>
