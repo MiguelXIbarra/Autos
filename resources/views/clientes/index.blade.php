@@ -40,19 +40,21 @@
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar Borrado</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmar Borrado</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body">
-                ¿Deseas eliminar al cliente con ID: <span id="nombre_id"></span>?
+            <div class="modal-body text-center">
+                <p>¿Realmente deseas dar de baja al registro con ID: <strong id="id_registro"></strong>?</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <a href="" id="borrar" class="btn btn-danger">Borrar</a>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <a href="" id="borrar" class="btn btn-danger">Confirmar Baja</a>
             </div>
         </div>
     </div>
@@ -68,7 +70,7 @@
 <script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
 <script>
     function modal(parametro) {
-        $('#nombre_id').html(parametro);
+        $('#id_registro').html(parametro);
         let url = "{{ route('clientes.destroy', ':id') }}";
         url = url.replace(':id', parametro);
         document.getElementById('borrar').href = url;
@@ -79,15 +81,23 @@
     $(document).ready(function() {
         $('#example').DataTable({
             "data": data,
-            "pageLength": 10,
-            "order": [[1, "asc"]],
             "language": {
-                "sSearch": "Buscar:",
-                "sEmptyTable": "No hay datos disponibles"
-            },
-            responsive: true,
-            dom: '<"col-xs-3"l><"col-xs-5"B><"col-xs-4"f>rtip',
-            buttons: ['copy', 'excel', 'pdf']
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "loadingRecords": "Cargando...",
+                "zeroRecords": "No se encontraron resultados",
+                "emptyTable": "Ningún dato disponible en esta tabla",
+                "paginate": {
+                    "first": "Primero",
+                    "previous": "Anterior",
+                    "next": "Siguiente",
+                    "last": "Último"
+                }
+            }
         });
     });
 </script>

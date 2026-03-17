@@ -30,11 +30,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/empleados/destroy/{id}', [EmpleadosController::class, 'destroy'])->name('empleados.destroy');
     Route::resource('empleados', EmpleadosController::class);
 
+    Route::get('/ventas/destroy/{id}', [VentasController::class, 'destroy'])->name('ventas.destroy');
     Route::resource('ventas', VentasController::class);
 
     Route::resource('usuarios', UserController::class)->only(['index']);
 
+    Route::get('/asset/destroy/{id}', [AssetController::class, 'destroy'])->name('asset.destroy');
     Route::resource('asset', AssetController::class);
+    
     Route::get('/video-file/{filename}', [AssetController::class, 'getVideo'])->name('fileVideo');
     Route::get('/miniatura/{filename}', [AssetController::class, 'getImage'])->name('imageVideo');
 
