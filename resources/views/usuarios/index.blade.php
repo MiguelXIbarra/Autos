@@ -1,10 +1,5 @@
 @extends('layouts.page')
 
-@section('css')
-@vite(['resources/sass/app.scss', 'resources/js/app.js'])
-<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
-@endsection
-
 @section('content_body')
 <div class="container">
     <div class="row">
