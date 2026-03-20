@@ -27,6 +27,7 @@
         transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         border: 1px solid #C9A24A;
         text-decoration: none;
+        cursor: pointer;
     }
 
     .btn-lux:hover {
@@ -35,18 +36,26 @@
         box-shadow: 0 0 30px rgba(201, 162, 74, 0.3);
     }
 
+    /* Track Optimizado para evitar jaloneos */
     #track {
         display: flex;
         gap: 0;
-        transition: transform 0.1s linear;
+        will-change: transform;
+        transform: translate3d(0, 0, 0);
     }
 
     .text-gold {
         color: #C9A24A;
     }
+
+    /* Evitar que el scroll horizontal del navegador interfiera */
+    #catalogo-section {
+        touch-action: pan-y;
+        user-select: none;
+    }
 </style>
 
-{{-- SECTION 1: HERO (IDÉNTICO PARA AMBOS) --}}
+{{-- HERO SECTION --}}
 <section class="relative h-screen w-full flex items-end pb-32 bg-black overflow-hidden">
     <div class="absolute inset-0 z-0">
         @php
@@ -65,7 +74,6 @@
     </div>
 
     <div class="relative z-20 px-10 md:px-20 text-white font-bold">
-        {{-- CAMBIO DINÁMICO: Saludo si está autenticado --}}
         @auth
         <p class="text-[#C9A24A] uppercase tracking-[0.5em] text-[0.7rem] mb-4">Bienvenido, {{ Auth::user()->name }}</p>
         @endauth
@@ -76,8 +84,6 @@
 
         <div class="flex flex-wrap gap-4">
             <a href="#catalogo-section" class="btn-lux text-white font-bold">Ver catálogo</a>
-
-            {{-- BOTÓN EXTRA: Solo aparece si ya inició sesión --}}
             @auth
             <a href="{{ route('autos.index') }}"
                 class="btn-lux border-white text-white bg-transparent hover:bg-white hover:text-black">Panel de
@@ -87,7 +93,7 @@
     </div>
 </section>
 
-{{-- SECTION 2: CATÁLOGO (SIEMPRE VISIBLE) --}}
+{{-- CATALOGO SECTION --}}
 <section id="catalogo-section" class="bg-[#0D0D0D] py-32 overflow-hidden relative z-30">
     <div class="container mx-auto px-10 mb-16 text-white font-bold">
         <h2 class="text-[0.6rem] text-[#C9A24A] font-black uppercase tracking-[0.6em] mb-4 text-gold">Mundo Luxure</h2>
@@ -95,14 +101,14 @@
     </div>
     <div class="relative w-full overflow-hidden">
         <button id="prev-cat"
-            class="nav-btn absolute left-10 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/60 border border-[#C9A24A]/40 flex items-center justify-center text-[#C9A24A] hover:bg-[#C9A24A] hover:text-black shadow-2xl transition-all duration-300 font-bold">❮</button>
+            class="absolute left-10 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/60 border border-[#C9A24A]/40 flex items-center justify-center text-[#C9A24A] hover:bg-[#C9A24A] hover:text-black shadow-2xl transition-all duration-300 font-bold">❮</button>
         <button id="next-cat"
-            class="nav-btn absolute right-10 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/60 border border-[#C9A24A]/40 flex items-center justify-center text-[#C9A24A] hover:bg-[#C9A24A] hover:text-black shadow-2xl transition-all duration-300 font-bold">❯</button>
-        <div id="track" class="flex w-max will-change-transform"></div>
+            class="absolute right-10 top-1/2 -translate-y-1/2 z-50 w-14 h-14 rounded-full bg-black/60 border border-[#C9A24A]/40 flex items-center justify-center text-[#C9A24A] hover:bg-[#C9A24A] hover:text-black shadow-2xl transition-all duration-300 font-bold">❯</button>
+        <div id="track" class="flex"></div>
     </div>
 </section>
 
-{{-- SECTION 3: CONTACTO (SIEMPRE VISIBLE) --}}
+{{-- CONTACTO SECTION --}}
 <section id="contacto" class="bg-[#0D0D0D] py-32 relative z-30 border-t border-white/5">
     <div class="container mx-auto px-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
@@ -133,77 +139,114 @@
 </section>
 
 <script>
-    window.addEventListener('load', function() {
-    // 1. Slider del Hero
-    const heroItems = document.querySelectorAll('.hero-item');
-    let currentHero = 0;
-    setInterval(() => {
-        heroItems[currentHero].classList.remove('active');
-        currentHero = (currentHero + 1) % heroItems.length;
-        heroItems[currentHero].classList.add('active');
-    }, 5000);
-
-    // 2. Lógica del Catálogo
+    window.addEventListener('DOMContentLoaded', function() {
     const track = document.getElementById('track');
+    const section = document.getElementById('catalogo-section');
+    if(!track) return;
+
     const autos = [
         { n: 'Azure Race', p: '$410k', u: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=1200' }, 
         { n: 'Classic Mod', p: '$160k', u: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=1200' },
         { n: 'Vanquish S', p: '$210k', u: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200' },
         { n: 'Stradale GT', p: '$285k', u: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=1200' },
-        { n: 'Apex Concept', p: '$350k', u: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=1200' },
+        { n: 'Apex Concept', p: '$350k', u: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=90&w=1200' },
         { n: 'Formula S', p: '$195k', u: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=90&w=1200' },
         { n: 'Legacy GTR', p: '$220k', u: 'https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1200' },
         { n: 'White Sport', p: '$180k', u: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1200' }
     ];
 
-    const html = autos.map(a => `
+    const cardContent = autos.map(a => `
         <div class="card-element w-[85vw] md:w-[45vw] lg:w-[30vw] px-4 flex-shrink-0">
             <div class="group relative overflow-hidden rounded-2xl bg-black h-[550px] border border-white/5">
                 <img src="${a.u}" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
                 <div class="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-black/90">
-                    <h4 class="text-3xl font-black italic uppercase text-white font-bold tracking-tighter">${a.n}</h4>
+                    <h4 class="text-3xl font-black italic uppercase text-white tracking-tighter">${a.n}</h4>
                     <p class="text-[#C9A24A] font-bold text-sm mt-2 uppercase text-gold">${a.p} USD</p>
                 </div>
             </div>
         </div>
     `).join('');
 
-    track.innerHTML = html + html + html;
-    let posX = 0, isPaused = false, isManual = false;
-    const cardW = track.querySelector('.card-element').offsetWidth;
-    const fullW = autos.length * cardW;
-    posX = -fullW;
+    // Iniciamos con 3 sets para tener margen de maniobra
+    track.innerHTML = cardContent + cardContent + cardContent;
 
-    function step() {
-        if (!isPaused && !isManual) {
+    let posX = 0;
+    let isPaused = false;
+    let isManual = false;
+    let blockW = 0;
+
+    // Medir después de que las imágenes se carguen o el layout esté listo
+    const initDimensions = () => {
+        const elements = track.querySelectorAll('.card-element');
+        blockW = 0;
+        for (let i = 0; i < autos.length; i++) {
+            blockW += elements[i].offsetWidth;
+        }
+        // Iniciar en el set central sin animación para evitar el "jaloneo" inicial
+        track.style.transition = "none";
+        posX = -blockW;
+        track.style.transform = `translate3d(${posX}px, 0, 0)`;
+    };
+
+    // Llamamos a la medición inicial
+    setTimeout(initDimensions, 100);
+
+    function animate() {
+        if (!isPaused && !isManual && blockW > 0) {
             posX -= 1.0; 
-            if (Math.abs(posX) >= fullW * 2) posX = -fullW;
+            
+            // Si pasamos el bloque central, regresamos al inicio del central instantáneamente
+            if (Math.abs(posX) >= blockW * 2) {
+                posX = -blockW;
+            }
             track.style.transform = `translate3d(${posX}px, 0, 0)`;
         }
-        requestAnimationFrame(step);
+        requestAnimationFrame(animate);
     }
 
     const move = (dir) => {
-        if(isManual) return;
+        if (isManual || blockW === 0) return;
         isManual = true;
-        const snap = Math.round(posX / cardW);
-        posX = (dir === 'next' ? snap - 1 : snap + 1) * cardW;
-        track.style.transition = "transform 0.6s cubic-bezier(0.19, 1, 0.22, 1)";
+        
+        const cardW = track.querySelector('.card-element').offsetWidth;
+        // Calculamos a qué tarjeta "saltar"
+        const targetCard = dir === 'next' ? Math.floor(posX / cardW) - 1 : Math.ceil(posX / cardW) + 1;
+        posX = targetCard * cardW;
+        
+        track.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
         track.style.transform = `translate3d(${posX}px, 0, 0)`;
+
         setTimeout(() => {
             track.style.transition = "none";
-            isManual = false;
-            if (Math.abs(posX) >= fullW * 2) posX = -fullW;
-            if (posX >= 0) posX = -fullW;
+            // Normalizar posición tras el salto para seguir el bucle infinito
+            if (Math.abs(posX) >= blockW * 2) posX += blockW;
+            if (posX >= 0) posX -= blockW;
             track.style.transform = `translate3d(${posX}px, 0, 0)`;
+            isManual = false;
         }, 600);
-    }
+    };
 
-    document.getElementById('next-cat').onclick = () => move('next');
-    document.getElementById('prev-cat').onclick = () => move('prev');
-    document.getElementById('catalogo-section').onmouseenter = () => isPaused = true;
-    document.getElementById('catalogo-section').onmouseleave = () => isPaused = false;
-    requestAnimationFrame(step);
+    document.getElementById('next-cat').addEventListener('click', (e) => { e.preventDefault(); move('next'); });
+    document.getElementById('prev-cat').addEventListener('click', (e) => { e.preventDefault(); move('prev'); });
+    
+    section.addEventListener('mouseenter', () => isPaused = true);
+    section.addEventListener('mouseleave', () => isPaused = false);
+
+    window.addEventListener('resize', initDimensions);
+
+    // Arrancamos el ciclo
+    requestAnimationFrame(animate);
+
+    // Hero Slider
+    const heroItems = document.querySelectorAll('.hero-item');
+    if(heroItems.length > 0){
+        let currentHero = 0;
+        setInterval(() => {
+            heroItems[currentHero].classList.remove('active');
+            currentHero = (currentHero + 1) % heroItems.length;
+            heroItems[currentHero].classList.add('active');
+        }, 5000);
+    }
 });
 </script>
 @endsection
