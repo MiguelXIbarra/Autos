@@ -1,6 +1,52 @@
 @extends('layouts.app')
-@section('content')
 
+@section('content')
+<style>
+    /* Estilos base del diseño Luxure */
+    .hero-item {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        z-index: 0;
+    }
+
+    .hero-item.active {
+        opacity: 1;
+    }
+
+    .btn-lux {
+        display: inline-block;
+        padding: 1.2rem 3rem;
+        background: #C9A24A;
+        color: #000 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        font-size: 0.75rem;
+        font-weight: 900;
+        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        border: 1px solid #C9A24A;
+        text-decoration: none;
+    }
+
+    .btn-lux:hover {
+        background: transparent;
+        color: #C9A24A !important;
+        box-shadow: 0 0 30px rgba(201, 162, 74, 0.3);
+    }
+
+    #track {
+        display: flex;
+        gap: 0;
+        transition: transform 0.1s linear;
+    }
+
+    .text-gold {
+        color: #C9A24A;
+    }
+</style>
+
+{{-- SECTION 1: HERO (IDÉNTICO PARA AMBOS) --}}
 <section class="relative h-screen w-full flex items-end pb-32 bg-black overflow-hidden">
     <div class="absolute inset-0 z-0">
         @php
@@ -17,14 +63,31 @@
         </div>
         @endforeach
     </div>
+
     <div class="relative z-20 px-10 md:px-20 text-white font-bold">
+        {{-- CAMBIO DINÁMICO: Saludo si está autenticado --}}
+        @auth
+        <p class="text-[#C9A24A] uppercase tracking-[0.5em] text-[0.7rem] mb-4">Bienvenido, {{ Auth::user()->name }}</p>
+        @endauth
+
         <h1 class="text-5xl md:text-8xl font-light tracking-tighter leading-none mb-8 uppercase text-white font-bold">
             Autos de lujo y<br><span class="font-black italic text-[#C9A24A]">alto rendimiento.</span>
         </h1>
-        <a href="#catalogo-section" class="btn-lux text-white font-bold">Ver catálogo</a>
+
+        <div class="flex flex-wrap gap-4">
+            <a href="#catalogo-section" class="btn-lux text-white font-bold">Ver catálogo</a>
+
+            {{-- BOTÓN EXTRA: Solo aparece si ya inició sesión --}}
+            @auth
+            <a href="{{ route('autos.index') }}"
+                class="btn-lux border-white text-white bg-transparent hover:bg-white hover:text-black">Panel de
+                Control</a>
+            @endauth
+        </div>
     </div>
 </section>
 
+{{-- SECTION 2: CATÁLOGO (SIEMPRE VISIBLE) --}}
 <section id="catalogo-section" class="bg-[#0D0D0D] py-32 overflow-hidden relative z-30">
     <div class="container mx-auto px-10 mb-16 text-white font-bold">
         <h2 class="text-[0.6rem] text-[#C9A24A] font-black uppercase tracking-[0.6em] mb-4 text-gold">Mundo Luxure</h2>
@@ -39,6 +102,7 @@
     </div>
 </section>
 
+{{-- SECTION 3: CONTACTO (SIEMPRE VISIBLE) --}}
 <section id="contacto" class="bg-[#0D0D0D] py-32 relative z-30 border-t border-white/5">
     <div class="container mx-auto px-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
@@ -46,7 +110,8 @@
                 <h2 class="text-[0.6rem] text-[#C9A24A] font-black uppercase tracking-[0.6em] mb-4">Luxure Connection
                 </h2>
                 <p class="text-5xl font-light tracking-tighter italic text-white mb-12 font-bold">Hablemos de tu
-                    <br><span class="text-[#C9A24A] font-black italic uppercase">próximo deportivo.</span></p>
+                    <br><span class="text-[#C9A24A] font-black italic uppercase">próximo deportivo.</span>
+                </p>
                 <div class="space-y-8 text-gray-400 italic font-bold">
                     <p>Av. Paseo de los Héroes, 101, Guadalajara, Jalisco.</p>
                     <p>+52 33 1234 5678</p>
@@ -69,8 +134,17 @@
 
 <script>
     window.addEventListener('load', function() {
+    // 1. Slider del Hero
+    const heroItems = document.querySelectorAll('.hero-item');
+    let currentHero = 0;
+    setInterval(() => {
+        heroItems[currentHero].classList.remove('active');
+        currentHero = (currentHero + 1) % heroItems.length;
+        heroItems[currentHero].classList.add('active');
+    }, 5000);
+
+    // 2. Lógica del Catálogo
     const track = document.getElementById('track');
-    const section = document.getElementById('catalogo-section');
     const autos = [
         { n: 'Azure Race', p: '$410k', u: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=1200' }, 
         { n: 'Classic Mod', p: '$160k', u: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=1200' },
@@ -88,7 +162,7 @@
                 <img src="${a.u}" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
                 <div class="absolute inset-0 p-10 flex flex-col justify-end bg-gradient-to-t from-black/90">
                     <h4 class="text-3xl font-black italic uppercase text-white font-bold tracking-tighter">${a.n}</h4>
-                    <p class="text-[#C9A24A] font-bold text-sm mt-2 font-bold uppercase text-gold">${a.p} USD</p>
+                    <p class="text-[#C9A24A] font-bold text-sm mt-2 uppercase text-gold">${a.p} USD</p>
                 </div>
             </div>
         </div>
@@ -119,16 +193,16 @@
         setTimeout(() => {
             track.style.transition = "none";
             isManual = false;
-            if (Math.abs(posX) >= fullW * 2) posX = -fullW + (posX % cardW);
-            if (posX > -fullW / 2) posX = -fullW - (Math.abs(posX) % cardW);
+            if (Math.abs(posX) >= fullW * 2) posX = -fullW;
+            if (posX >= 0) posX = -fullW;
             track.style.transform = `translate3d(${posX}px, 0, 0)`;
         }, 600);
     }
 
     document.getElementById('next-cat').onclick = () => move('next');
     document.getElementById('prev-cat').onclick = () => move('prev');
-    section.onmouseenter = () => isPaused = true;
-    section.onmouseleave = () => isPaused = false;
+    document.getElementById('catalogo-section').onmouseenter = () => isPaused = true;
+    document.getElementById('catalogo-section').onmouseleave = () => isPaused = false;
     requestAnimationFrame(step);
 });
 </script>

@@ -2,77 +2,71 @@
 
 @section('css')
 <style>
-    /* 1. FONDO INMERSIVO */
+    /* 1. RESET DARK PREMIUM (Sin bordes blancos) */
     html,
     body,
     .wrapper,
     .content-wrapper,
     .main-header,
-    .main-sidebar {
-        background: #050507 !important;
-        color: #d1d1d1 !important;
+    .main-sidebar,
+    .content {
+        background-color: #050505 !important;
         border: none !important;
+        color: #eee !important;
     }
 
-    /* Iluminación de Showroom: Un aura azul profundo que se mueve en el fondo */
+    .main-header.navbar {
+        border-bottom: none !important;
+        background-color: #000 !important;
+    }
+
+    /* Iluminación de Showroom sutil */
     .content-wrapper {
-        background: radial-gradient(circle at 0% 0%, rgba(0, 123, 255, 0.05) 0%, transparent 40%),
-            radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.8) 0%, #050507 100%) !important;
+        background-image: radial-gradient(at 0% 0%, rgba(0, 123, 255, 0.08) 0px, transparent 50%) !important;
     }
 
-    /* 2. TARJETAS "GLASS-PREMIUM" (Efecto cristalizado) */
+    /* 2. TARJETAS "GLASS-PREMIUM" */
     .card {
         background: rgba(20, 20, 25, 0.7) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.03) !important;
-        /* Borde casi invisible */
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
         border-radius: 25px !important;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6) !important;
         margin-top: 20px;
-        overflow: hidden;
-    }
-
-    .card-header {
-        background: rgba(255, 255, 255, 0.02) !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-        padding: 1.8rem !important;
     }
 
     .card-title {
-        font-weight: 800 !important;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 4px;
-        background: linear-gradient(to right, #ffffff, #007bff);
+        letter-spacing: 3px;
+        background: linear-gradient(90deg, #007bff, #00c6ff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
-    /* 3. TABLAS DE ALTA GAMA (Filas Flotantes) */
+    /* 3. TABLAS ESTILO LUXURE */
     .table {
         border-collapse: separate !important;
-        border-spacing: 0 12px !important;
+        border-spacing: 0 10px !important;
+        width: 100% !important;
     }
 
     .table thead th {
-        color: #4f4f4f !important;
+        color: #444 !important;
         border: none !important;
         text-transform: uppercase;
         font-size: 0.7rem;
         letter-spacing: 2px;
-        padding: 15px !important;
     }
 
     .table tbody tr {
         background: rgba(255, 255, 255, 0.02) !important;
-        border-radius: 15px;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        transition: 0.4s;
     }
 
-    .table tbody tr:hover {
+    .table-hover tbody tr:hover {
         background: rgba(0, 123, 255, 0.1) !important;
         transform: translateY(-5px) scale(1.01);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         color: #fff !important;
     }
 
@@ -82,33 +76,57 @@
         vertical-align: middle !important;
     }
 
-    /* 4. BOTONES "SPORT" (Degradados fluidos) */
-    .btn {
-        border-radius: 12px !important;
-        font-weight: 700 !important;
+    /* 4. FOOTER AMPLIO ESTILO CUPRA */
+    .main-footer {
+        background: #000 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding: 4rem 2rem !important;
+        color: #888 !important;
+        margin-left: 0 !important;
+    }
+
+    .footer-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer-section h4 {
+        color: #fff;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 3px;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(90deg, #007bff, #00c6ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .footer-section ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-section ul li a {
+        color: #555;
         transition: 0.3s;
-        border: none !important;
+        text-decoration: none;
+        font-size: 0.9rem;
     }
 
-    .btn-success {
-        background: linear-gradient(45deg, #1db954, #191414) !important;
-        box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+    .footer-section ul li a:hover {
+        color: #007bff;
+        padding-left: 5px;
     }
 
-    .btn-primary {
-        background: linear-gradient(45deg, #007bff, #00c6ff) !important;
-        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-    }
-
-    /* 5. DATA TABLES CUSTOM */
-    .dataTables_filter input {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 30px !important;
-        color: #fff !important;
-        padding: 8px 20px !important;
+    /* Ajuste de margen para el footer con el sidebar de AdminLTE */
+    @media (min-width: 768px) {
+        .main-footer {
+            margin-left: 250px !important;
+        }
     }
 </style>
 @yield('local_css')
@@ -118,8 +136,50 @@
 <div class="container-fluid pt-3">
     @yield('content_body')
 </div>
+
+{{-- Formulario oculto global para el Logout --}}
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
+
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h4>PROYECTO AUTOS</h4>
+            <p>Gestión automotriz de alto rendimiento. Privacidad y potencia en un solo lugar.</p>
+        </div>
+        <div class="footer-section">
+            <h4>SISTEMA</h4>
+            <ul>
+                <li><a href="{{ route('autos.index') }}">Inventario</a></li>
+                <li><a href="{{ route('ventas.index') }}">Ventas</a></li>
+                <li><a href="{{ route('home') }}">Home</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>SOPORTE</h4>
+            <p class="small text-muted"><i class="fas fa-envelope mr-2"></i> help@luxure.com</p>
+            <p class="small text-muted"><i class="fas fa-phone mr-2"></i> +52 33 1234 5678</p>
+        </div>
+    </div>
+    <div class="text-center mt-5 border-top border-dark pt-4" style="font-size: 0.8rem;">
+        &copy; {{ date('Y') }} LUXURE | Agencia de Autos Deportivos.
+    </div>
+</footer>
 @endsection
 
 @push('js')
+<script>
+    // Este script asegura que cualquier botón de logout dentro del admin funcione
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutButtons = document.querySelectorAll('a[href="{{ route('logout') }}"]');
+            logoutButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.getElementById('logout-form').submit();
+                });
+            });
+        });
+</script>
 @yield('local_js')
 @endpush

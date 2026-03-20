@@ -13,7 +13,9 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // Eliminamos o comentamos el middleware 'auth' para que 
+        // los invitados puedan ver el catálogo en el Home.
+        // $this->middleware('auth');
     }
 
     /**

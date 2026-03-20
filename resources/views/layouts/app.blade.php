@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Luxure | Agencia de Autos Deportivos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -93,20 +94,26 @@
     <aside id="sidebar"
         class="fixed top-0 right-0 h-full w-[350px] bg-[#0D0D0D] border-l border-white/5 translate-x-full flex flex-col p-12">
         <button id="close-menu"
-            class="text-white text-[0.6rem] uppercase tracking-[0.4em] mb-16 text-right hover:text-[#C9A24A] transition">Cerrar
+            class="text-white text-[0.6rem] uppercase tracking-[0.4em] mb-16 text-right hover:text-[#C9A24A] transition">CERRAR
             ✕</button>
 
         <div class="flex flex-col h-full justify-between">
             <div class="space-y-12">
+                {{-- SECCIÓN CUENTA: ICONO IZQUIERDA, NOMBRE DERECHA --}}
                 <div>
                     <p class="text-[0.6rem] text-[#C9A24A] font-black uppercase tracking-[0.4em] mb-6">Cuenta</p>
                     @auth
                     <div class="flex items-center space-x-4">
                         <div
-                            class="w-10 h-10 rounded-full bg-[#C9A24A] flex items-center justify-center text-black font-bold uppercase shadow-[0_0_15px_rgba(201,162,74,0.3)]">
+                            class="w-12 h-12 rounded-full bg-[#C9A24A] flex items-center justify-center text-black font-bold uppercase shadow-[0_0_15px_rgba(201,162,74,0.3)] text-xl">
                             {{ substr(Auth::user()->name, 0, 1) }}
                         </div>
-                        <span class="text-lg font-light italic text-white">{{ Auth::user()->name }}</span>
+                        <div class="flex flex-col">
+                            <span class="text-[0.5rem] text-[#C9A24A] font-black uppercase tracking-[0.3em]">Cuenta
+                                Activa</span>
+                            <span class="text-lg font-light italic text-white leading-tight">{{ Auth::user()->name
+                                }}</span>
+                        </div>
                     </div>
                     @else
                     <ul class="space-y-4 text-xl font-light italic uppercase tracking-tighter text-white">
@@ -118,6 +125,7 @@
                     @endauth
                 </div>
 
+                {{-- SECCIÓN ADMINISTRACIÓN: TAL CUAL ESTABA --}}
                 <div>
                     <p class="text-[0.6rem] text-[#C9A24A] font-black uppercase tracking-[0.4em] mb-6">Administración
                     </p>
@@ -138,23 +146,24 @@
 
             @auth
             <div class="border-t border-white/5 pt-8">
-                <form action="{{ route('logout') }}" method="POST">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit"
-                        class="text-[0.6rem] text-red-500 font-black uppercase tracking-[0.4em] hover:text-white transition">Cerrar
-                        Sesión</button>
+                        class="text-[0.6rem] text-red-500 font-black uppercase tracking-[0.4em] hover:text-white transition">SALIR
+                        DEL SISTEMA —</button>
                 </form>
             </div>
             @endauth
         </div>
     </aside>
 
+    {{-- NAVBAR ORIGINAL --}}
     <nav
         class="fixed w-full z-50 px-10 py-8 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent">
         <div class="text-xl font-black tracking-[0.4em] uppercase text-white font-bold">Luxure<span
                 class="text-[#C9A24A]">.</span></div>
         <ul class="hidden md:flex space-x-12 text-[0.65rem] font-bold uppercase tracking-[0.3em] text-white font-bold">
-            <li><a href="#" class="hover:text-[#C9A24A] transition">Inicio</a></li>
+            <li><a href="{{ url('/') }}" class="hover:text-[#C9A24A] transition">Inicio</a></li>
             <li><a href="#catalogo-section" class="hover:text-[#C9A24A] transition">Catálogo</a></li>
             <li><a href="#contacto" class="hover:text-[#C9A24A] transition">Contacto</a></li>
         </ul>
@@ -175,16 +184,6 @@
             openBtn.addEventListener('click', toggleMenu);
             closeBtn.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
-
-            const heroItems = document.querySelectorAll('.hero-item');
-            if(heroItems.length > 0) {
-                let current = 0;
-                setInterval(() => {
-                    heroItems[current].classList.remove('active');
-                    current = (current + 1) % heroItems.length;
-                    heroItems[current].classList.add('active');
-                }, 5000);
-            }
         });
     </script>
 </body>

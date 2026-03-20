@@ -11,16 +11,14 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\GeneradorController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 Auth::routes();
 
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
 Route::middleware(['auth'])->group(function () {
     
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-
     Route::get('/autos/destroy/{id}', [AutosController::class, 'destroy'])->name('autos.destroy');
     Route::resource('autos', AutosController::class);
 
@@ -44,5 +42,4 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/imprimir', [GeneradorController::class, 'imprimir'])->name('imprimir');
     Route::get('/imprimirBD', [GeneradorController::class, 'imprimirBD'])->name('imprimirBD');
-
 });
