@@ -11,11 +11,23 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\GeneradorController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::redirect('/', '/home');
 
-Auth::routes();
+Auth::routes(['reset' => false]);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::get('forgot-password', function () {
+    return view('auth.passwords.email');
+})->name('password.request');
+
+Route::post('password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('reset-password/{token}', function ($token) {
+    return view('auth.passwords.reset', ['token' => $token]);
+})->name('password.reset');
+
+Route::post('reset-password', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::middleware(['auth'])->group(function () {
     
