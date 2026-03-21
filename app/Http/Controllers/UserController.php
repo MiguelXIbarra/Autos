@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -72,9 +73,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         $usuario = User::find($id);
-        if ($usuario) {
+        if ($usuario && $usuario->id != Auth::id()) {
             $usuario->estatus = 0;
-            $usuario->update();
+            $usuario->save();
         }
         return redirect()->route('usuarios.index');
     }
@@ -83,31 +84,11 @@ class UserController extends Controller
     {
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
-            $ver = route('usuarios.show', $value['id']);
-            $actualizar = route('usuarios.edit', $value['id']);
-            
-            $acciones = '
-            <div class="btn-acciones text-center">
-                <div class="btn-circle">
-                    <a href="' . $ver . '" role="button" class="btn btn-primary">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="' . $actualizar . '" role="button" class="btn btn-success">
-                        <i class="far fa-edit"></i>
-                    </a>
-                    <a role="button" class="btn btn-danger" onclick="modal(' . $value['id'] . ')" data-toggle="modal" data-target="#exampleModal">
-                        <i class="far fa-trash-alt"></i>
-                    </a>
-                </div>
-            </div>';
-
-            $datosFilas[$key] = array(
-                $acciones,
-                $value['id'],
-                $value['name'],
-                $value['email'],
-                $value['created_at']->format('Y-m-d')
-            );
+            $datosFilas[$key] = [
+                'id'    => $value->id,
+                'name'  => $value->name,
+                'email' => $value->email,
+            ];
         }
         return $datosFilas;
     }
