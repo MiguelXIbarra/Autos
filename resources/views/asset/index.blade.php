@@ -4,8 +4,8 @@
 <div class="container-fluid px-4 py-2">
     <div class="d-flex justify-content-between align-items-end mb-5">
         <div>
-            <h2 class="text-[#C9A24A] font-black uppercase tracking-[0.5em] mb-2"
-                style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;">Biblioteca Multimedia</h2>
+            <h2 style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;" class="font-black uppercase mb-2">
+                Biblioteca Multimedia</h2>
             <p class="text-white italic"
                 style="font-size: 2.8rem; font-weight: 200; letter-spacing: -1px; line-height: 1;">
                 Gestión de <span style="color: #C9A24A; font-weight: 900; font-style: normal;">Assets</span>
@@ -19,44 +19,59 @@
         </div>
     </div>
 
-    <div class="card card-luxure">
+    <div class="card"
+        style="background: #0D0D0D; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden;">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table id="luxureTable" class="table mb-0">
+                <table class="table mb-0" style="background: transparent;">
                     <thead>
                         <tr>
-                            <th class="px-4">ID</th>
-                            <th>Recurso</th>
-                            <th>Tipo</th>
-                            <th>Fecha</th>
-                            <th class="text-center">Acciones</th>
+                            <th
+                                style="color: #C9A24A; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 2px; border: none; padding: 20px;">
+                                ID</th>
+                            <th
+                                style="color: #C9A24A; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 2px; border: none;">
+                                Recurso</th>
+                            <th
+                                style="color: #C9A24A; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 2px; border: none;">
+                                Tipo</th>
+                            <th
+                                style="color: #C9A24A; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 2px; border: none;">
+                                Fecha</th>
+                            <th style="color: #C9A24A; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 2px; border: none;"
+                                class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($assets as $item)
                         <tr>
-                            <td class="px-4 align-middle">
-                                <span class="text-id">#{{ str_pad($item['id'], 4, '0', STR_PAD_LEFT) }}</span>
+                            <td class="align-middle px-4"
+                                style="border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);">
+                                #{{ str_pad($item['id'], 4, '0', STR_PAD_LEFT) }}
                             </td>
-                            <td class="align-middle text-white font-weight-bold italic">
-                                {{ $item['nombre'] }}
+                            <td class="align-middle" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-3 d-flex align-items-center justify-content-center"
+                                        style="width: 35px; height: 35px; background: rgba(201, 162, 74, 0.1); border-radius: 8px; color: #C9A24A;">
+                                        @if($item['tipo'] == 'Video') <i class="fas fa-video"></i>
+                                        @elseif($item['tipo'] == 'Imagen') <i class="fas fa-image"></i>
+                                        @else <i class="fas fa-file-alt"></i> @endif
+                                    </div>
+                                    <span class="text-white font-weight-bold italic">{{ $item['nombre'] }}</span>
+                                </div>
                             </td>
-                            <td class="align-middle text-muted">{{ $item['tipo'] }}</td>
-                            <td class="align-middle text-muted">{{ $item['fecha'] }}</td>
-                            <td class="text-center align-middle">
-                                <div class="acciones-container">
-                                    <a href="{{ route('asset.show', $item['id']) }}" class="icon-btn text-info"
-                                        title="Ver">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('asset.edit', $item['id']) }}" class="icon-btn text-warning mx-2"
-                                        title="Editar">
-                                        <i class="fas fa-pen-nib"></i>
-                                    </a>
-                                    <a href="{{ route('asset.destroy', $item['id']) }}" class="icon-btn text-danger"
-                                        onclick="return confirm('¿Eliminar recurso?')" title="Eliminar">
-                                        <i class="fas fa-ghost"></i>
-                                    </a>
+                            <td class="align-middle text-muted" style="border-top: 1px solid rgba(255,255,255,0.05);">{{
+                                $item['tipo'] }}</td>
+                            <td class="align-middle text-muted" style="border-top: 1px solid rgba(255,255,255,0.05);">{{
+                                $item['fecha'] }}</td>
+                            <td class="text-center align-middle" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('asset.show', $item['id']) }}" class="btn-action text-info"><i
+                                            class="fas fa-eye"></i></a>
+                                    <a href="{{ route('asset.edit', $item['id']) }}"
+                                        class="btn-action text-warning mx-2"><i class="fas fa-pen-nib"></i></a>
+                                    <a href="{{ route('asset.destroy', $item['id']) }}" class="btn-action text-danger"
+                                        onclick="return confirm('¿Eliminar recurso?')"><i class="fas fa-ghost"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -69,81 +84,22 @@
 </div>
 
 <style>
-    .card-luxure {
-        background: #0D0D0D !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 20px !important;
-    }
-
-    .table {
-        background: transparent !important;
-    }
-
-    th {
-        color: #C9A24A !important;
-        text-transform: uppercase;
-        font-size: 0.65rem;
-        letter-spacing: 2px;
-        border: none !important;
-        padding: 20px 10px !important;
-    }
-
-    td {
-        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-        padding: 15px 10px !important;
-        vertical-align: middle;
-    }
-
-    .text-id {
-        color: rgba(255, 255, 255, 0.2);
-        font-family: monospace;
-    }
-
-    .acciones-container {
-        display: flex !important;
-        gap: 8px;
-        justify-content: center;
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        display: inline-flex;
         align-items: center;
-    }
-
-    .icon-btn {
-        display: inline-flex !important;
-        width: 38px !important;
-        height: 38px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: rgba(255, 255, 255, 0.03) !important;
-        border-radius: 12px !important;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
         transition: 0.3s;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        text-decoration: none !important;
     }
 
-    .icon-btn:hover {
-        background: rgba(201, 162, 74, 0.1) !important;
+    .btn-action:hover {
+        background: rgba(201, 162, 74, 0.1);
+        border-color: #C9A24A;
         transform: translateY(-2px);
-        border-color: #C9A24A !important;
-    }
-
-    .btn-lux {
-        background: #C9A24A;
-        color: #000;
-        font-weight: 900;
-        padding: 10px 20px;
-        border-radius: 4px;
-        text-decoration: none !important;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-    }
-
-    .btn-regresar-blanco {
-        border: 1px solid #fff;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 4px;
-        text-decoration: none !important;
-        font-size: 0.7rem;
-        text-transform: uppercase;
     }
 </style>
 @stop

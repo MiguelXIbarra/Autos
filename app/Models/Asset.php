@@ -10,12 +10,12 @@ class Asset extends Model
     use HasFactory;
 
     protected $table = 'assets';
+    protected $primaryKey = 'id_asset';
 
     protected $fillable = [
-        'nombre',
+        'titulo',
         'tipo',
-        'archivo',
-        'descripcion',
+        'ruta',
         'estatus',
     ];
 }
