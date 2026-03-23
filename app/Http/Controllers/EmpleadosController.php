@@ -21,15 +21,23 @@ class EmpleadosController extends Controller
     public function store(Request $request)
     {
         $validacion = $request->validate([
-            'nombre' => 'required',
-            'puesto' => 'required',
-            'salario' => 'required|numeric',
-            'fecha_ingreso' => 'required|date'
+            'nombre'   => 'required|string|max:255',
+            'puesto'   => 'required|string|max:100',
+            'telefono' => 'required|string|max:20',
+            'email'    => 'required|email|unique:empleados,email',
+            'fecha_ingreso' => 'required|date',
         ]);
 
-        Empleado::create($validacion + ['estatus' => 1]);
+        Empleado::create([
+            'nombre'   => $validacion['nombre'],
+            'puesto'   => $validacion['puesto'],
+            'telefono' => $validacion['telefono'],
+            'email'    => $validacion['email'],
+            'fecha_ingreso' => $validacion['fecha_ingreso'],
+            'estatus'  => 1
+        ]);
 
-        return redirect()->route('empleados.index')->with('message', 'Empleado registrado con éxito');
+        return redirect()->route('empleados.index');
     }
 
     public function show($id)
@@ -46,60 +54,42 @@ class EmpleadosController extends Controller
 
     public function update(Request $request, $id)
     {
+        $empleado = Empleado::findOrFail($id);
+        
         $validacion = $request->validate([
-            'nombre' => 'required',
-            'puesto' => 'required',
-            'salario' => 'required|numeric',
-            'fecha_ingreso' => 'required|date'
+            'nombre'   => 'required|string|max:255',
+            'puesto'   => 'required|string|max:100',
+            'telefono' => 'required|string|max:20',
+            'email'    => 'required|email|unique:empleados,email,'.$id.',id_empleado',
+            'fecha_ingreso' => 'required|date',
         ]);
 
-        $empleado = Empleado::findOrFail($id);
         $empleado->update($validacion);
 
-        return redirect()->route('empleados.index')->with('message', 'Empleado actualizado correctamente');
+        return redirect()->route('empleados.index');
     }
 
     public function destroy($id)
     {
-        $empleado = Empleado::find($id);
-        if ($empleado) {
-            $empleado->estatus = 0;
-            $empleado->update();
-            return redirect()->route('empleados.index')->with('message', 'Empleado eliminado correctamente');
-        }
-        return redirect()->route('empleados.index')->with('message', 'El empleado no existe');
+        $empleado = Empleado::findOrFail($id);
+        $empleado->estatus = 0;
+        $empleado->save();
+
+        return redirect()->route('empleados.index');
     }
 
     private function cargarDT($consulta)
     {
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
-            $ver = route('empleados.show', $value['id_empleado']);
-            $actualizar = route('empleados.edit', $value['id_empleado']);
-            
-            $acciones = '
-            <div class="btn-acciones">
-                <div class="btn-circle">
-                    <a href="' . $ver . '" role="button" class="btn btn-primary" title="Ver Detalle">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="' . $actualizar . '" role="button" class="btn btn-success" title="Actualizar">
-                        <i class="far fa-edit"></i>
-                    </a>
-                    <a role="button" class="btn btn-danger" onclick="modal(' . $value['id_empleado'] . ')" data-toggle="modal" data-target="#exampleModal">
-                        <i class="far fa-trash-alt"></i>
-                    </a>
-                </div>
-            </div>';
-
-            $datosFilas[$key] = array(
-                $acciones,
-                $value['id_empleado'],
-                $value['nombre'],
-                $value['puesto'],
-                $value['salario'],
-                $value['fecha_ingreso']
-            );
+            $datosFilas[$key] = [
+                'id'       => $value->id_empleado,
+                'nombre'   => $value->nombre,
+                'puesto'   => $value->puesto,
+                'contacto' => $value->email,
+                'telefono' => $value->telefono,
+                'ingreso'  => date('d/m/Y', strtotime($value->fecha_ingreso)),
+            ];
         }
         return $datosFilas;
     }
