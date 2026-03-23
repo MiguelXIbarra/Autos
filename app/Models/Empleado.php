@@ -15,14 +15,8 @@ class Empleado extends Model
     protected $fillable = [
         'nombre',
         'puesto',
-        'telefono',
-        'email',
+        'salario',
         'fecha_ingreso',
-        'estatus'
+        'estatus',
     ];
-
-    public function ventas()
-    {
-        return $this->hasMany(Venta::class, 'id_empleado');
-    }
 }

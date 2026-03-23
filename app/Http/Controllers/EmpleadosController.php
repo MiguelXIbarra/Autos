@@ -20,21 +20,19 @@ class EmpleadosController extends Controller
 
     public function store(Request $request)
     {
-        $validacion = $request->validate([
-            'nombre'   => 'required|string|max:255',
-            'puesto'   => 'required|string|max:100',
-            'telefono' => 'required|string|max:20',
-            'email'    => 'required|email|unique:empleados,email',
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'puesto' => 'required|string|max:255',
+            'salario' => 'required|numeric',
             'fecha_ingreso' => 'required|date',
         ]);
 
         Empleado::create([
-            'nombre'   => $validacion['nombre'],
-            'puesto'   => $validacion['puesto'],
-            'telefono' => $validacion['telefono'],
-            'email'    => $validacion['email'],
-            'fecha_ingreso' => $validacion['fecha_ingreso'],
-            'estatus'  => 1
+            'nombre' => $request->nombre,
+            'puesto' => $request->puesto,
+            'salario' => $request->salario,
+            'fecha_ingreso' => $request->fecha_ingreso,
+            'estatus' => 1,
         ]);
 
         return redirect()->route('empleados.index');
@@ -54,27 +52,26 @@ class EmpleadosController extends Controller
 
     public function update(Request $request, $id)
     {
-        $empleado = Empleado::findOrFail($id);
-        
-        $validacion = $request->validate([
-            'nombre'   => 'required|string|max:255',
-            'puesto'   => 'required|string|max:100',
-            'telefono' => 'required|string|max:20',
-            'email'    => 'required|email|unique:empleados,email,'.$id.',id_empleado',
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'puesto' => 'required|string|max:255',
+            'salario' => 'required|numeric',
             'fecha_ingreso' => 'required|date',
         ]);
 
-        $empleado->update($validacion);
+        $empleado = Empleado::findOrFail($id);
+        $empleado->update($request->all());
 
         return redirect()->route('empleados.index');
     }
 
     public function destroy($id)
     {
-        $empleado = Empleado::findOrFail($id);
-        $empleado->estatus = 0;
-        $empleado->save();
-
+        $empleado = Empleado::find($id);
+        if ($empleado) {
+            $empleado->estatus = 0;
+            $empleado->save();
+        }
         return redirect()->route('empleados.index');
     }
 
@@ -83,12 +80,11 @@ class EmpleadosController extends Controller
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
             $datosFilas[$key] = [
-                'id'       => $value->id_empleado,
-                'nombre'   => $value->nombre,
-                'puesto'   => $value->puesto,
-                'contacto' => $value->email,
-                'telefono' => $value->telefono,
-                'ingreso'  => date('d/m/Y', strtotime($value->fecha_ingreso)),
+                'id'      => (int) $value->id_empleado,
+                'nombre'  => $value->nombre,
+                'puesto'  => $value->puesto,
+                'salario' => $value->salario,
+                'ingreso' => $value->fecha_ingreso,
             ];
         }
         return $datosFilas;
