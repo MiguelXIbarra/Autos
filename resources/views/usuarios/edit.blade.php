@@ -4,60 +4,64 @@
 <div class="container-fluid px-4 py-2">
     <div class="mb-5">
         <h2 style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;" class="font-black uppercase mb-2">
-            Actualizar Credenciales</h2>
-        <p class="text-white italic" style="font-size: 2.5rem; font-weight: 200; letter-spacing: -1px;">Editar <span
-                style="color: #C9A24A; font-weight: 900; font-style: normal;">Usuario</span></p>
+            Mantenimiento</h2>
+        <p class="text-white italic" style="font-size: 2.5rem; font-weight: 200; letter-spacing: -1px; line-height: 1;">
+            Editar <span style="color: #C9A24A; font-weight: 900; font-style: normal;">Usuario</span>
+        </p>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card card-luxure">
-                <div class="card-body p-5">
-                    <form action="{{ route('usuarios.update', $usuario->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group mb-4">
-                            <label class="text-[#C9A24A] uppercase tracking-widest font-bold mb-2"
-                                style="font-size: 0.6rem; color: #C9A24A;">Nombre Completo</label>
-                            <input type="text" name="name" class="form-control lux-input" value="{{ $usuario->name }}"
-                                required>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label class="text-[#C9A24A] uppercase tracking-widest font-bold mb-2"
-                                style="font-size: 0.6rem; color: #C9A24A;">Correo Electrónico</label>
-                            <input type="email" name="email" class="form-control lux-input"
-                                value="{{ $usuario->email }}" required>
-                        </div>
-                        <div class="mt-5 pt-3 border-t border-white/5">
-                            <p class="text-gray-500 text-[0.6rem] uppercase mb-4 italic">Dejar en blanco para mantener
-                                contraseña actual</p>
-                            <div class="form-group mb-4">
-                                <label class="text-[#C9A24A] uppercase tracking-widest font-bold mb-2"
-                                    style="font-size: 0.6rem; color: #C9A24A;">Nueva Contraseña</label>
-                                <input type="password" name="password" class="form-control lux-input">
-                            </div>
-                            <div class="form-group mb-5">
-                                <label class="text-[#C9A24A] uppercase tracking-widest font-bold mb-2"
-                                    style="font-size: 0.6rem; color: #C9A24A;">Confirmar Nueva Contraseña</label>
-                                <input type="password" name="password_confirmation" class="form-control lux-input">
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3">
-                            <button type="submit" class="btn-lux">Actualizar Registro</button>
-                            <a href="{{ route('usuarios.index') }}" class="btn-regresar-blanco">Cancelar</a>
-                        </div>
-                    </form>
+    <div class="card shadow-sm"
+        style="background: #0D0D0D; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;">
+        <div class="card-body p-5">
+            <form action="{{ route('usuarios.update', $user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Nombre de Usuario</label>
+                        <input type="text" name="name" class="form-control lux-input" value="{{ $user->name }}"
+                            required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control lux-input" value="{{ $user->email }}"
+                            required>
+                    </div>
                 </div>
-            </div>
+
+                <div class="mt-4 mb-4">
+                    <p class="text-muted small italic">Dejar los campos de contraseña vacíos si no desea cambiarla.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Nueva Contraseña (Opcional)</label>
+                        <input type="password" name="password" class="form-control lux-input">
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Confirmar Nueva Contraseña</label>
+                        <input type="password" name="password_confirmation" class="form-control lux-input">
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <button type="submit" class="btn-lux">Guardar Cambios</button>
+                    <a href="{{ route('usuarios.index') }}" class="btn-regresar-blanco ml-3">Regresar</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <style>
-    .card-luxure {
-        background: #0D0D0D !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 20px !important;
+    .lux-label {
+        font-size: 0.6rem;
+        color: #C9A24A;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        display: block;
     }
 
     .lux-input {
@@ -67,7 +71,6 @@
         color: #fff !important;
         border-radius: 0 !important;
         padding: 10px 0 !important;
-        font-style: italic;
     }
 
     .lux-input:focus {
@@ -89,28 +92,20 @@
     }
 
     .btn-lux:hover {
-        background: #fff !important;
-        box-shadow: 0 0 20px rgba(201, 162, 74, 0.4);
+        background: #e0b75a !important;
+        transform: translateY(-2px);
     }
 
     .btn-regresar-blanco {
         padding: 12px 30px;
-        background: transparent;
-        color: #fff !important;
         border: 1px solid #fff;
+        color: #fff !important;
         border-radius: 4px;
         text-transform: uppercase;
         font-weight: 900;
         font-size: 0.7rem;
-        letter-spacing: 1px;
         transition: 0.3s;
         text-decoration: none !important;
-        display: inline-block;
-    }
-
-    .btn-regresar-blanco:hover {
-        background: #fff;
-        color: #000 !important;
     }
 </style>
 @stop

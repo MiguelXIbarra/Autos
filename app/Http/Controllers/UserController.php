@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $usuarios = User::where('estatus', 1)->get();
-        return view('usuarios.index', ['usuarios' => $this->cargarDT($usuarios)]);
+        // Solo obtener usuarios activos (estatus = 1)
+        $users = User::where('estatus', 1)->get();
+        return view('usuarios.index', ['users' => $this->cargarDT($users)]);
     }
 
     public function create()
@@ -22,62 +22,65 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validacion = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         User::create([
-            'name' => $validacion['name'],
-            'email' => $validacion['email'],
-            'password' => Hash::make($validacion['password']),
-            'estatus' => 1
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'estatus' => 1, // Por defecto activo
         ]);
 
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     public function show($id)
     {
-        $usuario = User::findOrFail($id);
-        return view('usuarios.show', compact('usuario'));
+        $user = User::findOrFail($id);
+        return view('usuarios.show', compact('user'));
     }
 
     public function edit($id)
     {
-        $usuario = User::findOrFail($id);
-        return view('usuarios.edit', compact('usuario'));
+        $user = User::findOrFail($id);
+        return view('usuarios.edit', compact('user'));
     }
 
     public function update(Request $request, $id)
     {
-        $usuario = User::findOrFail($id);
-        
-        $validacion = $request->validate([
+        $user = User::findOrFail($id);
+
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $usuario->update($validacion);
-
+        $data = $request->only(['name', 'email']);
+        
+        // Solo actualizar contraseña si se proporcionó una nueva
         if ($request->filled('password')) {
-            $request->validate(['password' => 'confirmed|min:8']);
-            $usuario->password = Hash::make($request->password);
-            $usuario->save();
+            $data['password'] = Hash::make($request->password);
         }
 
-        return redirect()->route('usuarios.index');
+        $user->update($data);
+
+        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
+    // Método Destroy implementado para baja lógica
     public function destroy($id)
     {
-        $usuario = User::find($id);
-        if ($usuario && $usuario->id != Auth::id()) {
-            $usuario->estatus = 0;
-            $usuario->save();
+        $user = User::find($id);
+        if ($user) {
+            $user->estatus = 0; // Baja lógica
+            $user->save();
         }
-        return redirect()->route('usuarios.index');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario dado de baja exitosamente.');
     }
 
     private function cargarDT($consulta)
@@ -85,9 +88,10 @@ class UserController extends Controller
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
             $datosFilas[$key] = [
-                'id'    => $value->id,
-                'name'  => $value->name,
-                'email' => $value->email,
+                'id'      => (int) $value->id,
+                'nombre'  => $value->name,
+                'email'   => $value->email,
+                'fecha'   => $value->created_at->format('d/m/Y H:i'),
             ];
         }
         return $datosFilas;

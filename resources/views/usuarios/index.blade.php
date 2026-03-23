@@ -4,73 +4,81 @@
 <div class="container-fluid px-4 py-2">
     <div class="d-flex justify-content-between align-items-end mb-5">
         <div>
-            <h2 class="text-[#C9A24A] font-black uppercase tracking-[0.5em] mb-2"
-                style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;">Gestión de Privacidad</h2>
+            <h2 style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;" class="font-black uppercase mb-2">
+                Seguridad</h2>
             <p class="text-white italic"
                 style="font-size: 2.8rem; font-weight: 200; letter-spacing: -1px; line-height: 1;">
-                Panel de <span style="color: #C9A24A; font-weight: 900; font-style: normal;">Usuarios</span>
+                Gestión de <span style="color: #C9A24A; font-weight: 900; font-style: normal;">Usuarios</span>
             </p>
         </div>
         <div class="d-flex gap-3">
             <a href="{{ route('usuarios.create') }}" class="btn-lux">
-                <i class="fas fa-plus-circle mr-2"></i> Nuevo Registro
+                <i class="fas fa-user-plus mr-2"></i> Nuevo Usuario
             </a>
-            <a href="{{ route('home') }}" class="btn-regresar-blanco">
-                Regresar
-            </a>
+            <a href="{{ route('home') }}" class="btn-regresar-blanco">Regresar</a>
         </div>
     </div>
 
-    <div class="card card-luxure">
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert"
+        style="background: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; border-radius: 10px;">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: #fff;">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    @endif
+
+    <div class="card shadow-sm"
+        style="background: #0D0D0D; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden;">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table id="luxureTable" class="table mb-0">
+                <table class="table mb-0" style="background: transparent;">
                     <thead>
                         <tr>
-                            <th class="px-4">ID</th>
-                            <th>Usuario</th>
-                            <th>Email</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="lux-th">ID</th>
+                            <th class="lux-th">Usuario</th>
+                            <th class="lux-th">Correo Electrónico</th>
+                            <th class="lux-th">Fecha de Registro</th>
+                            <th class="lux-th text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($usuarios as $user)
-                        @php
-                        $userId = $user['id'];
-                        $name = $user['name'] ?? 'N/A';
-                        $initial = strtoupper(substr($name, 0, 1));
-                        $isMe = (Auth::id() == $userId);
-                        @endphp
-                        <tr class="{{ $isMe ? 'row-me' : '' }}">
-                            <td class="px-4 align-middle">
-                                <span class="text-id">#{{ str_pad($userId, 4, '0', STR_PAD_LEFT) }}</span>
+                        @foreach($users as $item)
+                        <tr>
+                            <td class="align-middle px-4"
+                                style="border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);">
+                                #{{ str_pad($item['id'], 4, '0', STR_PAD_LEFT) }}
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" style="border-top: 1px solid rgba(255,255,255,0.05);">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-circle">{{ $initial }}</div>
-                                    <div>
-                                        <span class="text-white italic font-weight-bold">{{ $name }}</span>
-                                        @if($isMe)
-                                        <span class="badge ml-2 badge-me">TÚ</span>
-                                        @endif
+                                    <div class="mr-3 d-flex align-items-center justify-content-center"
+                                        style="width: 35px; height: 35px; background: rgba(201, 162, 74, 0.1); border-radius: 8px; color: #C9A24A;">
+                                        <i class="fas fa-user"></i>
                                     </div>
+                                    <span class="text-white font-weight-bold italic">{{ $item['nombre'] }}</span>
                                 </div>
                             </td>
-                            <td class="align-middle text-muted">{{ $user['email'] ?? 'N/A' }}</td>
-                            <td class="text-center align-middle">
-                                <div class="acciones-container">
-                                    <a href="{{ route('usuarios.show', $userId) }}" class="icon-btn text-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('usuarios.edit', $userId) }}" class="icon-btn text-warning">
-                                        <i class="fas fa-pen-nib"></i>
-                                    </a>
-                                    @if(!$isMe)
-                                    <a href="{{ route('usuarios.destroy', $userId) }}" class="icon-btn text-danger"
-                                        onclick="return confirm('¿Dar de baja este acceso?')">
-                                        <i class="fas fa-ghost"></i>
-                                    </a>
-                                    @endif
+                            <td class="align-middle text-muted" style="border-top: 1px solid rgba(255,255,255,0.05);">{{
+                                $item['email'] }}</td>
+                            <td class="align-middle text-muted" style="border-top: 1px solid rgba(255,255,255,0.05);">{{
+                                $item['fecha'] }}</td>
+                            <td class="text-center align-middle" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('usuarios.show', $item['id']) }}" class="btn-action text-info"><i
+                                            class="fas fa-eye"></i></a>
+                                    <a href="{{ route('usuarios.edit', $item['id']) }}"
+                                        class="btn-action text-warning mx-2"><i class="fas fa-pen-nib"></i></a>
+
+                                    <form action="{{ route('usuarios.destroy', $item['id']) }}" method="POST"
+                                        style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action text-danger"
+                                            onclick="return confirm('¿Dar de baja al usuario?')">
+                                            <i class="fas fa-user-times"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -83,116 +91,73 @@
 </div>
 
 <style>
-    .card-luxure {
-        background: #0D0D0D !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 20px !important;
-    }
-
-    .table {
-        background: transparent !important;
-    }
-
-    th {
-        color: #C9A24A !important;
+    .lux-th {
+        color: #C9A24A;
         text-transform: uppercase;
         font-size: 0.65rem;
         letter-spacing: 2px;
         border: none !important;
-        padding: 20px 10px !important;
+        padding: 20px !important;
     }
 
-    td {
-        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-        padding: 15px 10px !important;
-        vertical-align: middle;
-    }
-
-    .text-id {
-        color: rgba(255, 255, 255, 0.2);
-        font-family: monospace;
-    }
-
-    .row-me {
-        background: rgba(201, 162, 74, 0.05) !important;
-    }
-
-    .badge-me {
-        background: #C9A24A;
-        color: #000;
-        font-size: 10px;
+    .btn-lux {
+        background: #C9A24A !important;
+        color: #000 !important;
         font-weight: 900;
-    }
-
-    .avatar-circle {
-        width: 32px;
-        height: 32px;
-        background: linear-gradient(45deg, #C9A24A, #8a6d2e);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #000;
-        font-weight: 900;
-        margin-right: 12px;
-    }
-
-    .acciones-container {
-        display: flex !important;
-        gap: 8px;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .icon-btn {
-        display: inline-flex !important;
-        width: 38px !important;
-        height: 38px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: rgba(255, 255, 255, 0.03) !important;
-        border-radius: 12px !important;
-        transition: 0.3s;
+        text-transform: uppercase;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
         text-decoration: none !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        transition: 0.3s;
     }
 
-    .icon-btn:hover {
-        background: rgba(201, 162, 74, 0.1) !important;
+    .btn-lux:hover {
+        background: #e0b75a !important;
         transform: translateY(-2px);
-        border-color: rgba(201, 162, 74, 0.2) !important;
     }
 
     .btn-regresar-blanco {
-        padding: 10px 25px;
-        background: transparent;
-        color: #fff !important;
+        padding: 12px 30px;
         border: 1px solid #fff;
+        color: #fff !important;
         border-radius: 4px;
         text-transform: uppercase;
         font-weight: 900;
         font-size: 0.7rem;
-        letter-spacing: 1px;
-        transition: 0.3s;
         text-decoration: none !important;
-        display: inline-block;
+        transition: 0.3s;
     }
 
     .btn-regresar-blanco:hover {
-        background: #fff;
-        color: #000 !important;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: 0.3s;
+        text-decoration: none !important;
+    }
+
+    .btn-action:hover {
+        background: rgba(201, 162, 74, 0.1);
+        border-color: #C9A24A;
+        transform: translateY(-2px);
+    }
+
+    /* Estilo para el botón de formulario destroy */
+    form button.btn-action {
+        border: none;
+        cursor: pointer;
     }
 </style>
-@stop
-
-@section('js')
-<script>
-    $(document).ready(function() {
-        $('#luxureTable').DataTable({
-            "responsive": true,
-            "autoWidth": false,
-            "language": { "url": "https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" }
-        });
-    });
-</script>
-@stop
+@stop   
