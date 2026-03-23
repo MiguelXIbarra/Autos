@@ -20,20 +20,25 @@ class ClientesController extends Controller
 
     public function store(Request $request)
     {
-        $validacion = $request->validate([
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'correo' => 'required|email',
+        $request->validate([
+            'nombre'   => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'correo'   => 'required|email|unique:clientes,correo',
             'telefono' => 'required',
-            'direccion' => 'required'
         ]);
 
-        Cliente::create($validacion + ['estatus' => 1]);
+        Cliente::create([
+            'nombre'    => $request->nombre,
+            'apellido'  => $request->apellido,
+            'correo'    => $request->correo,
+            'telefono'  => $request->telefono,
+            'direccion' => $request->direccion,
+            'estatus'   => 1
+        ]);
 
-        return redirect()->route('clientes.index')->with('message', 'Cliente registrado con éxito');
+        return redirect()->route('clientes.index');
     }
 
-    // MÉTODO AGREGADO PARA SOLUCIONAR EL ERROR
     public function show($id)
     {
         $cliente = Cliente::findOrFail($id);
@@ -48,18 +53,17 @@ class ClientesController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validacion = $request->validate([
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'correo' => 'required|email',
-            'telefono' => 'required',
-            'direccion' => 'required'
+        $cliente = Cliente::findOrFail($id);
+        
+        $request->validate([
+            'nombre'   => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'correo'   => 'required|email|unique:clientes,correo,'.$id.',id_cliente',
         ]);
 
-        $cliente = Cliente::findOrFail($id);
-        $cliente->update($validacion);
+        $cliente->update($request->all());
 
-        return redirect()->route('clientes.index')->with('message', 'Cliente actualizado correctamente');
+        return redirect()->route('clientes.index');
     }
 
     public function destroy($id)
@@ -67,42 +71,21 @@ class ClientesController extends Controller
         $cliente = Cliente::find($id);
         if ($cliente) {
             $cliente->estatus = 0;
-            $cliente->update();
-            return redirect()->route('clientes.index')->with('message', 'Cliente eliminado correctamente');
+            $cliente->save();
         }
-        return redirect()->route('clientes.index')->with('message', 'El cliente no existe');
+        return redirect()->route('clientes.index');
     }
 
     private function cargarDT($consulta)
     {
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
-            $ver = route('clientes.show', $value['id_cliente']);
-            $actualizar = route('clientes.edit', $value['id_cliente']);
-            
-            $acciones = '
-            <div class="btn-acciones">
-                <div class="btn-circle">
-                    <a href="' . $ver . '" role="button" class="btn btn-primary" title="Ver Detalle">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="' . $actualizar . '" role="button" class="btn btn-success" title="Actualizar">
-                        <i class="far fa-edit"></i>
-                    </a>
-                    <a role="button" class="btn btn-danger" onclick="modal(' . $value['id_cliente'] . ')" data-toggle="modal" data-target="#exampleModal">
-                        <i class="far fa-trash-alt"></i>
-                    </a>
-                </div>
-            </div>';
-
-            $datosFilas[$key] = array(
-                $acciones,
-                $value['id_cliente'],
-                $value['nombre'],
-                $value['apellido'],
-                $value['correo'],
-                $value['telefono']
-            );
+            $datosFilas[$key] = [
+                'id'       => $value->id_cliente,
+                'nombre'   => $value->nombre . ' ' . $value->apellido,
+                'email'    => $value->correo, // Aquí extraemos de 'correo' para la vista
+                'telefono' => $value->telefono,
+            ];
         }
         return $datosFilas;
     }
