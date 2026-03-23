@@ -1,97 +1,147 @@
 @extends('layouts.page')
 
 @section('content_body')
-<div class="container">
-    <div class="row">
-        @if (session('message'))
-        <div class="alert alert-success">{{ session('message') }}</div>
-        @endif
+<div class="container-fluid px-4 py-2">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h2 style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;" class="font-black uppercase mb-2">
+                Registro de Operaciones</h2>
+            <p class="text-white italic"
+                style="font-size: 2.8rem; font-weight: 200; letter-spacing: -1px; line-height: 1;">
+                Panel de <span style="color: #C9A24A; font-weight: 900; font-style: normal;">Ventas</span>
+            </p>
+        </div>
+        <div class="d-flex gap-3">
+            <a href="{{ route('ventas.create') }}" class="btn-lux">
+                <i class="fas fa-plus-circle mr-2"></i> Nueva Venta
+            </a>
+            <a href="{{ route('home') }}" class="btn-regresar-blanco">Regresar</a>
+        </div>
     </div>
-    <div class="row">
-        <h2>Panel de Ventas</h2>
-        <hr>
-        <br>
-        <p align="right">
-            <a href="{{ route('ventas.create') }}" class="btn btn-success">Nueva Venta</a>
-            <a href="{{ route('home') }}" class="btn btn-primary">Regresar</a>
-        </p>
-        <table id="example" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Acciones</th>
-                    <th>Folio</th>
-                    <th>Cliente</th>
-                    <th>Vehículo</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Confirmar Borrado</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <p>¿Realmente deseas dar de baja al registro con ID: <strong id="id_registro"></strong>?</p>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <a href="" id="borrar" class="btn btn-danger">Confirmar Baja</a>
+    <div class="card card-luxure">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="luxureTable" class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="px-4">ID</th>
+                            <th>Vehículo</th>
+                            <th>Cliente</th>
+                            <th>Vendedor</th>
+                            <th>Total</th>
+                            <th>Fecha</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($ventas as $item)
+                        <tr>
+                            <td class="px-4 align-middle"><span class="text-id">#{{ str_pad($item['id'], 4, '0',
+                                    STR_PAD_LEFT) }}</span></td>
+                            <td class="align-middle text-white font-weight-bold italic">{{ $item['auto'] }}</td>
+                            <td class="align-middle text-muted">{{ $item['cliente'] }}</td>
+                            <td class="align-middle text-muted">{{ $item['empleado'] }}</td>
+                            <td class="align-middle text-[#C9A24A] font-weight-bold">{{ $item['total'] }}</td>
+                            <td class="align-middle text-muted">{{ $item['fecha'] }}</td>
+                            <td class="text-center align-middle">
+                                <div class="acciones-container">
+                                    <a href="{{ route('ventas.show', $item['id']) }}" class="icon-btn text-info"><i
+                                            class="fas fa-eye"></i></a>
+                                    <a href="{{ route('ventas.edit', $item['id']) }}"
+                                        class="icon-btn text-warning mx-2"><i class="fas fa-pen-nib"></i></a>
+                                    <a href="{{ route('ventas.destroy', $item['id']) }}" class="icon-btn text-danger"
+                                        onclick="return confirm('¿Anular esta venta?')"><i class="fas fa-ghost"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
-@section('js')
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
-<script>
-    function modal(parametro) {
-        $('#id_registro').html(parametro);
-        let url = "{{ route('ventas.destroy', ':id') }}"; 
-        url = url.replace(':id', parametro);
-        document.getElementById('borrar').href = url;
+<style>
+    .card-luxure {
+        background: #0D0D0D !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px !important;
     }
 
-    var data = @json($ventas);
+    .table {
+        background: transparent !important;
+    }
 
-    $(document).ready(function() {
-        $('#example').DataTable({
-            "data": data,
-            "language": {
-                "processing": "Procesando...",
-                "search": "Buscar:",
-                "lengthMenu": "Mostrar _MENU_ registros",
-                "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "infoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "loadingRecords": "Cargando...",
-                "zeroRecords": "No se encontraron resultados",
-                "emptyTable": "Ningún dato disponible en esta tabla",
-                "paginate": {
-                    "first": "Primero",
-                    "previous": "Anterior",
-                    "next": "Siguiente",
-                    "last": "Último"
-                }
-            }
-        });
-    });
-</script>
-@endsection
+    th {
+        color: #C9A24A !important;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        border: none !important;
+        padding: 20px 10px !important;
+    }
+
+    td {
+        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding: 15px 10px !important;
+        vertical-align: middle;
+    }
+
+    .text-id {
+        color: rgba(255, 255, 255, 0.2);
+        font-family: monospace;
+    }
+
+    .acciones-container {
+        display: flex !important;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .icon-btn {
+        display: inline-flex !important;
+        width: 38px !important;
+        height: 38px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-radius: 12px !important;
+        transition: 0.3s;
+        text-decoration: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .icon-btn:hover {
+        background: rgba(201, 162, 74, 0.1) !important;
+        transform: translateY(-2px);
+        border-color: #C9A24A !important;
+    }
+
+    .btn-lux {
+        background: #C9A24A !important;
+        color: #000 !important;
+        font-weight: 900;
+        text-transform: uppercase;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        text-decoration: none !important;
+    }
+
+    .btn-regresar-blanco {
+        padding: 10px 25px;
+        border: 1px solid #fff;
+        color: #fff !important;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-weight: 900;
+        font-size: 0.7rem;
+        text-decoration: none !important;
+    }
+</style>
+@stop

@@ -1,36 +1,52 @@
 @extends('layouts.page')
 
 @section('content_body')
-<div class="container">
-    <div class="card card-outline card-success mt-4">
-        <div class="card-header">
-            <h3 class="card-title">Comprobante de Venta #{{ $venta->id_venta }}</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-sm-4">
-                    <strong>Cliente:</strong><br>
-                    {{ $venta->cliente->nombre }} {{ $venta->cliente->apellido }}<br>
-                    {{ $venta->cliente->correo }}
-                </div>
-                <div class="col-sm-4">
-                    <strong>Vehículo:</strong><br>
-                    {{ $venta->auto->marca }} {{ $venta->auto->modelo }} ({{ $venta->auto->anio }})
-                </div>
-                <div class="col-sm-4 text-right">
-                    <strong>Fecha:</strong> {{ $venta->fecha_venta }}<br>
-                    <strong>Vendedor:</strong> {{ $venta->empleado->nombre }}
+<div class="container-fluid px-4 py-2">
+    <div class="mb-5">
+        <h2 style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;" class="font-black uppercase mb-2">
+            Comprobante de Operación</h2>
+        <p class="text-white italic" style="font-size: 2.5rem; font-weight: 200; letter-spacing: -1px;">Detalle de <span
+                style="color: #C9A24A; font-weight: 900; font-style: normal;">Venta</span></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card card-luxure">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between mb-5">
+                        <span class="badge"
+                            style="background: #C9A24A; color: #000; font-weight: 900; padding: 10px 20px;">VENTA #{{
+                            $venta->id_venta }}</span>
+                        <span class="text-muted italic">{{ date('d M, Y', strtotime($venta->fecha_venta)) }}</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="lux-label">Vehículo Vendido</p>
+                        <h3 class="text-white italic">{{ $venta->auto->marca }} {{ $venta->auto->modelo }}</h3>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <p class="lux-label">Cliente</p>
+                            <p class="text-white">{{ $venta->cliente->nombre }}</p>
+                        </div>
+                        <div class="col-6">
+                            <p class="lux-label">Vendedor</p>
+                            <p class="text-white">{{ $venta->empleado->nombre }}</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/5 pt-4 mt-4">
+                        <p class="lux-label">Importe Total</p>
+                        <h2 style="color: #C9A24A; font-weight: 900;">${{ number_format($venta->total, 2) }}</h2>
+                    </div>
+
+                    <div class="mt-5">
+                        <a href="{{ route('ventas.index') }}" class="btn-regresar-blanco">Volver al Panel</a>
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div class="text-right">
-                <h3>Total Pagado: <span class="text-success">${{ number_format($venta->total, 2) }}</span></h3>
-            </div>
-        </div>
-        <div class="card-footer">
-            <a href="{{ route('ventas.index') }}" class="btn btn-default">Regresar</a>
-            <button onclick="window.print()" class="btn btn-info"><i class="fas fa-print"></i> Imprimir</button>
         </div>
     </div>
 </div>
-@endsection
+@stop

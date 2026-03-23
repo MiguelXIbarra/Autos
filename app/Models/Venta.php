@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Venta extends Model
 {
+    use HasFactory;
+
     protected $table = 'ventas';
     protected $primaryKey = 'id_venta';
+
     protected $fillable = [
         'id_auto',
         'id_cliente',
@@ -17,6 +21,7 @@ class Venta extends Model
         'estatus'
     ];
 
+    // Relaciones
     public function auto()
     {
         return $this->belongsTo(Autos::class, 'id_auto');
