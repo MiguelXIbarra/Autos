@@ -20,53 +20,50 @@ class AutosController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'marca' => 'required',
-            'modelo' => 'required',
-            'anio' => 'required|integer',
-            'precio' => 'required|numeric'
+        $request->validate([
+            'marca'  => 'required|string|max:255',
+            'modelo' => 'required|string|max:255',
+            'anio'   => 'required|integer',
+            'precio' => 'required|numeric',
         ]);
 
-        $auto = new Autos();
-        $auto->marca = $request->input('marca');
-        $auto->modelo = $request->input('modelo');
-        $auto->anio = $request->input('anio');
-        $auto->precio = $request->input('precio');
-        $auto->estatus = 1;
-        $auto->save();
+        Autos::create([
+            'marca'   => $request->marca,
+            'modelo'  => $request->modelo,
+            'anio'    => $request->anio,
+            'precio'  => $request->precio,
+            'estatus' => 1
+        ]);
 
-        return redirect()->route('autos.index')->with('message', 'Auto guardado correctamente');
+        return redirect()->route('autos.index');
     }
 
-    public function show(string $id)
+    public function show($id)
     {
         $auto = Autos::findOrFail($id);
         return view('autos.show', compact('auto'));
     }
 
-    public function edit(string $id)
+    public function edit($id)
     {
         $auto = Autos::findOrFail($id);
         return view('autos.edit', compact('auto'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'marca' => 'required',
-            'modelo' => 'required',
-            'anio' => 'required|integer',
-            'precio' => 'required|numeric'
+        $auto = Autos::findOrFail($id);
+        
+        $request->validate([
+            'marca'  => 'required|string|max:255',
+            'modelo' => 'required|string|max:255',
+            'anio'   => 'required|integer',
+            'precio' => 'required|numeric',
         ]);
 
-        $auto = Autos::findOrFail($id);
-        $auto->marca = $request->input('marca');
-        $auto->modelo = $request->input('modelo');
-        $auto->anio = $request->input('anio');
-        $auto->precio = $request->input('precio');
-        $auto->save();
+        $auto->update($request->all());
 
-        return redirect()->route('autos.index')->with('message', 'Auto actualizado correctamente');
+        return redirect()->route('autos.index');
     }
 
     public function destroy($id)
@@ -74,42 +71,21 @@ class AutosController extends Controller
         $auto = Autos::find($id);
         if ($auto) {
             $auto->estatus = 0;
-            $auto->update();
-            return redirect()->route('autos.index')->with('message', 'Auto eliminado correctamente');
+            $auto->save();
         }
-        return redirect()->route('autos.index')->with('message', 'El auto no existe');
+        return redirect()->route('autos.index');
     }
 
     private function cargarDT($consulta)
     {
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
-            $actualizar = route('autos.edit', $value['id_auto']);
-            $ver = route('autos.show', $value['id_auto']);
-            
-            $acciones = '
-            <div class="btn-acciones">
-                <div class="btn-circle">
-                    <a href="' . $ver . '" role="button" class="btn btn-primary" title="Ver">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="' . $actualizar . '" role="button" class="btn btn-success" title="Actualizar">
-                        <i class="far fa-edit"></i>
-                    </a>
-                    <a role="button" class="btn btn-danger" onclick="modal(' . $value['id_auto'] . ')" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <i class="far fa-trash-alt"></i>
-                    </a>
-                </div>
-            </div>';
-
-            $datosFilas[$key] = array(
-                $acciones,
-                $value['id_auto'],
-                $value['marca'],
-                $value['modelo'],
-                $value['anio'],
-                $value['precio']
-            );
+            $datosFilas[$key] = [
+                'id'     => $value->id_auto,
+                'unidad' => $value->marca . ' ' . $value->modelo,
+                'anio'   => $value->anio,
+                'precio' => '$' . number_format($value->precio, 2),
+            ];
         }
         return $datosFilas;
     }

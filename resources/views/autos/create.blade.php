@@ -1,44 +1,72 @@
 @extends('layouts.page')
 
 @section('content_body')
-<div class="container">
-    <div class="row">
-        <h2>Registrar Nuevo Auto</h2>
+<div class="container-fluid px-4 py-2">
+    <div class="mb-5">
+        <h2 style="color: #C9A24A; font-size: 0.7rem; letter-spacing: 0.6em;" class="font-black uppercase mb-2">Ingreso
+            de Unidad</h2>
+        <p class="text-white italic" style="font-size: 2.5rem; font-weight: 200; letter-spacing: -1px;">Nuevo <span
+                style="color: #C9A24A; font-weight: 900; font-style: normal;">Auto</span></p>
     </div>
-    <hr>
-    <div class="row">
-        <form action="{{ route('autos.store') }}" method="post" class="col-lg-7">
-            @csrf
-            @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                    <li>{{$error}}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
 
-            <div class="form-group">
-                <label for="marca">Marca</label>
-                <input type="text" class="form-control" id="marca" name="marca" value="{{old('marca')}}" required />
-            </div>
-            <div class="form-group">
-                <label for="modelo">Modelo</label>
-                <input type="text" class="form-control" id="modelo" name="modelo" value="{{old('modelo')}}" required />
-            </div>
-            <div class="form-group">
-                <label for="anio">Año</label>
-                <input type="number" class="form-control" id="anio" name="anio" value="{{old('anio')}}" required />
-            </div>
-            <div class="form-group">
-                <label for="precio">Precio</label>
-                <input type="text" class="form-control" id="precio" name="precio" value="{{old('precio')}}" required />
-            </div>
-            <br>
-            <button type="submit" class="btn btn-success">Guardar Registro</button>
-            <a href="{{ route('autos.index') }}" class="btn btn-danger">Cancelar</a>
-        </form>
+    <div class="card card-luxure">
+        <div class="card-body p-5">
+            <form action="{{ route('autos.store') }}" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Marca</label>
+                        <input type="text" name="marca" class="form-control lux-input" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Modelo</label>
+                        <input type="text" name="modelo" class="form-control lux-input" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Año</label>
+                        <input type="number" name="anio" class="form-control lux-input" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="lux-label">Precio</label>
+                        <input type="number" step="0.01" name="precio" class="form-control lux-input" required>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <button type="submit" class="btn-lux">Registrar Unidad</button>
+                    <a href="{{ route('autos.index') }}" class="btn-regresar-blanco ml-3">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-@endsection
+
+<style>
+    .lux-label {
+        font-size: 0.6rem;
+        color: #C9A24A;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .lux-input {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #fff !important;
+        border-radius: 0 !important;
+        padding: 10px 0 !important;
+    }
+
+    .lux-input:focus {
+        border-bottom: 1px solid #C9A24A !important;
+        box-shadow: none !important;
+    }
+</style>
+@stop
