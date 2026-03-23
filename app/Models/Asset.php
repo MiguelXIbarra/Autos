@@ -2,11 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
 {
+    use HasFactory;
+
     protected $table = 'assets';
-    protected $primaryKey = 'id_asset';
-    protected $fillable = ['titulo', 'tipo', 'ruta', 'estatus'];
+
+    protected $fillable = [
+        'nombre',
+        'tipo',
+        'archivo',
+        'descripcion',
+        'estatus',
+    ];
 }

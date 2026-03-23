@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AssetController extends Controller
 {
@@ -20,14 +21,22 @@ class AssetController extends Controller
 
     public function store(Request $request)
     {
-        $validacion = $request->validate([
-            'titulo' => 'required',
-            'tipo'   => 'required',
-            'ruta'   => 'required'
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'archivo' => 'required|file|max:50000',
+            'tipo' => 'required|string',
         ]);
 
-        // Guardamos con estatus activo por defecto
-        Asset::create($validacion + ['estatus' => 1]);
+        $nombreArchivo = time() . '_' . $request->file('archivo')->getClientOriginalName();
+        $request->file('archivo')->storeAs('public/assets', $nombreArchivo);
+
+        Asset::create([
+            'nombre' => $request->nombre,
+            'tipo' => $request->tipo,
+            'archivo' => $nombreArchivo,
+            'descripcion' => $request->descripcion,
+            'estatus' => 1,
+        ]);
 
         return redirect()->route('asset.index');
     }
@@ -46,15 +55,17 @@ class AssetController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validacion = $request->validate([
-            'titulo' => 'required',
-            'tipo'   => 'required',
-            'ruta'   => 'required'
-        ]);
-
         $asset = Asset::findOrFail($id);
-        $asset->update($validacion);
+        $data = $request->only(['nombre', 'tipo', 'descripcion']);
 
+        if ($request->hasFile('archivo')) {
+            Storage::delete('public/assets/' . $asset->archivo);
+            $nombreArchivo = time() . '_' . $request->file('archivo')->getClientOriginalName();
+            $request->file('archivo')->storeAs('public/assets', $nombreArchivo);
+            $data['archivo'] = $nombreArchivo;
+        }
+
+        $asset->update($data);
         return redirect()->route('asset.index');
     }
 
@@ -63,7 +74,7 @@ class AssetController extends Controller
         $asset = Asset::find($id);
         if ($asset) {
             $asset->estatus = 0;
-            $asset->update();
+            $asset->save();
         }
         return redirect()->route('asset.index');
     }
@@ -72,18 +83,13 @@ class AssetController extends Controller
     {
         $datosFilas = [];
         foreach ($consulta as $key => $value) {
-            $idActual = $value['id_asset'];
-
-            $acciones = '
-            <div class="btn-acciones text-center">
-                <div class="btn-circle">
-                    <a href="' . route('asset.show', $idActual) . '" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-                    <a href="' . route('asset.edit', $idActual) . '" class="btn btn-success"><i class="far fa-edit"></i></a>
-                    <a role="button" class="btn btn-danger" onclick="modal(' . $idActual . ')" data-toggle="modal" data-target="#exampleModal"><i class="far fa-trash-alt"></i></a>
-                </div>
-            </div>';
-
-            $datosFilas[$key] = array($acciones, $idActual, $value['titulo'], $value['tipo'], $value['ruta']);
+            $datosFilas[$key] = [
+                'id'      => (int) $value->id,
+                'nombre'  => $value->nombre,
+                'tipo'    => $value->tipo,
+                'archivo' => $value->archivo,
+                'fecha'   => $value->created_at->format('d/m/Y'),
+            ];
         }
         return $datosFilas;
     }
