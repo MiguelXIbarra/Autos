@@ -114,19 +114,32 @@
                     @error('email') <span class="text-red-500 text-[0.6rem] uppercase mt-1">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="space-y-2">
-                    <label class="text-[0.6rem] uppercase tracking-widest text-gray-500 font-bold">Nueva
-                        Contraseña</label>
-                    <input type="password" name="password" required
-                        class="w-full bg-transparent border-b border-white/10 py-2 text-white focus:outline-none focus:border-[#C9A24A] transition-colors italic">
-                    @error('password') <span class="text-red-500 text-[0.6rem] uppercase mt-1">{{ $message }}</span>
+
+                <div class="space-y-2 relative">
+                    <label class="text-[0.6rem] uppercase tracking-widest text-gray-500 font-bold">Nueva Contraseña</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="password" required
+                            class="w-full bg-transparent border-b border-white/10 py-2 pr-10 text-white focus:outline-none focus:border-[#C9A24A] transition-colors italic">
+                        <button type="button" onclick="togglePassword('password', this)"
+                            class="absolute right-0 top-2 text-[0.5rem] uppercase tracking-widest text-[#C9A24A] hover:text-white transition font-bold">
+                            Ver
+                        </button>
+                    </div>
+                    @error('password')
+                    <span class="text-red-500 text-[0.6rem] uppercase mt-1">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="space-y-2">
-                    <label class="text-[0.6rem] uppercase tracking-widest text-gray-500 font-bold">Repetir Nueva
-                        Contraseña</label>
-                    <input type="password" name="password_confirmation" required
-                        class="w-full bg-transparent border-b border-white/10 py-2 text-white focus:outline-none focus:border-[#C9A24A] transition-colors italic">
+
+                <div class="space-y-2 relative">
+                    <label class="text-[0.6rem] uppercase tracking-widest text-gray-500 font-bold">Confirmar Nueva Contraseña</label>
+                    <div class="relative">
+                        <input type="password" name="password_confirmation" id="password_confirmation" required
+                            class="w-full bg-transparent border-b border-white/10 py-2 pr-10 text-white focus:outline-none focus:border-[#C9A24A] transition-colors italic">
+                        <button type="button" onclick="togglePassword('password_confirmation', this)"
+                            class="absolute right-0 top-2 text-[0.5rem] uppercase tracking-widest text-[#C9A24A] hover:text-white transition font-bold">
+                            Ver
+                        </button>
+                    </div>
                 </div>
                 <div class="pt-6">
                     <button type="submit" class="btn-lux w-full text-white font-bold">Actualizar y Entrar</button>

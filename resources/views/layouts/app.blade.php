@@ -185,6 +185,17 @@
             closeBtn.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
         });
+
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "Ocultar";
+            } else {
+                input.type = "password";
+                button.textContent = "Ver";
+            }
+        }
     </script>
 </body>
 

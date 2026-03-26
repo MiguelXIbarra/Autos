@@ -26,11 +26,17 @@
                 </div>
 
                 {{-- Password --}}
-                <div class="space-y-2">
+                <div class="space-y-2 relative">
                     <label class="text-[0.6rem] uppercase tracking-widest text-gray-500 font-bold">Código de Acceso
                         (Contraseña)</label>
-                    <input type="password" name="password" required
-                        class="w-full bg-transparent border-b border-white/10 py-2 text-white focus:outline-none focus:border-[#C9A24A] transition-colors italic @error('password') border-red-500 @enderror">
+                    <div class="relative">
+                        <input type="password" name="password" id="password" required
+                            class="w-full bg-transparent border-b border-white/10 py-2 pr-10 text-white focus:outline-none focus:border-[#C9A24A] transition-colors italic @error('password') border-red-500 @enderror">
+                        <button type="button" onclick="togglePassword('password', this)"
+                            class="absolute right-0 top-2 text-[0.5rem] uppercase tracking-widest text-[#C9A24A] hover:text-white transition font-bold">
+                            Ver
+                        </button>
+                    </div>
                     @error('password')
                     <span class="text-red-500 text-[0.6rem] uppercase mt-1">{{ $message }}</span>
                     @enderror
