@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Asset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str; // Añadido para limpiar nombres
+use Illuminate\Support\Str;
 
 class AssetController extends Controller
 {
@@ -29,23 +29,19 @@ class AssetController extends Controller
         ]);
 
         $file = $request->file('archivo');
-        
-        // Limpiamos el nombre del archivo: quitamos espacios y caracteres especiales
-        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-        $nombreArchivo = time() . '_' . Str::slug($originalName) . '.' . $extension;
-        
-        $folder = $this->getFolder($request->tipo);
-        $file->storeAs('public/' . $folder, $nombreArchivo);
+    $nombreArchivo = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+    
+    $folder = $this->getFolder($request->tipo);
+    $file->storeAs($folder, $nombreArchivo, 'public');
 
-        Asset::create([
-            'titulo' => $request->titulo,
-            'tipo' => $request->tipo,
-            'ruta' => $nombreArchivo,
-            'estatus' => 1,
-        ]);
+    Asset::create([
+        'titulo' => $request->titulo,
+        'tipo' => $request->tipo,
+        'ruta' => $nombreArchivo,
+        'estatus' => 1,
+    ]);
 
-        return redirect()->route('asset.index');
+    return redirect()->route('asset.index');
     }
 
     public function show($id)
@@ -66,8 +62,7 @@ class AssetController extends Controller
         $data = $request->only(['titulo', 'tipo']);
 
         if ($request->hasFile('archivo')) {
-            $oldFolder = $this->getFolder($asset->tipo);
-            Storage::delete('public/' . $oldFolder . '/' . $asset->ruta);
+            Storage::delete('public/' . $asset->ruta);
 
             $file = $request->file('archivo');
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -76,7 +71,8 @@ class AssetController extends Controller
             
             $newFolder = $this->getFolder($request->tipo);
             $file->storeAs('public/' . $newFolder, $nombreArchivo);
-            $data['ruta'] = $nombreArchivo;
+            
+            $data['ruta'] = $newFolder . '/' . $nombreArchivo;
         }
 
         $asset->update($data);
@@ -93,26 +89,40 @@ class AssetController extends Controller
         return redirect()->route('asset.index');
     }
 
-    public function getVideo($filename)
-    {
-        // Usamos rawurldecode por si el nombre en la BD aún tiene espacios
-        $path = storage_path('app/public/videos/' . rawurldecode($filename));
-        if (!file_exists($path)) abort(404);
-        return response()->file($path, ['Content-Type' => 'video/mp4']);
-    }
-
     public function getImage($filename)
     {
         $path = storage_path('app/public/images/' . rawurldecode($filename));
-        if (!file_exists($path)) abort(404);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
         return response()->file($path);
+    }
+
+    public function getVideo($filename)
+    {
+        $path = storage_path('app/public/videos/' . rawurldecode($filename));
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path, ['Content-Type' => 'video/mp4']);
     }
 
     public function getDocument($filename)
     {
         $path = storage_path('app/public/documents/' . rawurldecode($filename));
-        if (!file_exists($path)) abort(404);
-        return response()->file($path);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$filename.'"'
+        ]);
     }
 
     private function getFolder($tipo)

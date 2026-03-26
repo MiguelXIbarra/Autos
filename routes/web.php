@@ -50,8 +50,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('asset', AssetController::class);
     
     Route::get('/video-file/{filename}', [AssetController::class, 'getVideo'])->name('fileVideo');
-    Route::get('/miniatura/{filename}', [AssetController::class, 'getImage'])->name('imageVideo');
-    Route::get('/documento-file/{filename}', [AssetController::class, 'getDocument'])->name('fileDoc');
+Route::get('/miniatura/{filename}', [AssetController::class, 'getImage'])->name('imageVideo');
+Route::get('/documento-file/{filename}', [AssetController::class, 'getDocument'])->name('fileDoc');
 
     Route::get('/imprimir', [GeneradorController::class, 'imprimir'])->name('imprimir');
     Route::get('/imprimirBD', [GeneradorController::class, 'imprimirBD'])->name('imprimirBD');

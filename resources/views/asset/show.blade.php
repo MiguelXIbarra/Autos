@@ -2,10 +2,11 @@
 
 @section('content_body')
 @php
+$fileName = basename($asset->ruta);
 $url = match($asset->tipo) {
-'Imagen' => route('imageVideo', $asset->ruta),
-'Video' => route('fileVideo', $asset->ruta),
-'Documento' => route('fileDoc', $asset->ruta),
+'Imagen' => route('imageVideo', ['filename' => $fileName]),
+'Video' => route('fileVideo', ['filename' => $fileName]),
+'Documento' => route('fileDoc', ['filename' => $fileName]),
 default => '#'
 };
 @endphp
