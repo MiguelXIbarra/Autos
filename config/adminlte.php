@@ -303,11 +303,7 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'Buscar',
         ],
-        [
-            'text' => 'DASHBOARD',
-            'url' => 'home',
-            'icon' => 'fas fa-fw fa-tachometer-alt',
-        ],
+        
         ['header' => 'ADMINISTRACIÓN'],
         [
             'text' => 'Autos',
